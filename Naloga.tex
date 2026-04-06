@@ -137,6 +137,12 @@ Za lokalni razvoj in hitrejše testiranje sem uporabil Vite, ker sem lahko sprem
 
 Ko sem prvič stopil v stik s Heleno Božič Janežič s Srednje zdravstvene šole Ljubljana, mi je predstavila obstoječi način izpolnjevanja poročil. Dijaki zdravstvene nege so dokumentacijo izpolnjevali na papirju, pogosto tik pred rokom oddaje. Ugotovil sem, da je tak način dela povzročal več težav:
 
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.28\textwidth]{slike/zdravstvena_sola_jubljana_logo.png}
+    \caption{Logotip Srednje zdravstvene šole Ljubljana, naročnika spletne aplikacije}
+\end{figure}
+
 \begin{itemize}
     \item zapisi so bili pogosto površni,
     \item nekateri deli poročil so se ponavljali,
@@ -174,9 +180,33 @@ Pri razvoju sem se odločil za naslednji tehnološki sklad:
     \item \textbf{Cookies} in \textbf{localStorage} za shranjevanje stanja v brskalniku.
 \end{itemize}
 
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.22\textwidth]{slike/react_logo.png}
+    \hspace{1.5cm}
+    \includegraphics[width=0.35\textwidth]{slike/tailwindlogo.png}
+    \caption{Logotipa knjižnic React in Tailwind CSS}
+\end{figure}
+
 Za ta izbor sem se odločil, ker omogoča hitro razvojno delo, dobro preglednost kode in enostavno nadgradnjo aplikacije. V produkcijski različici sem se odpovedal strežniškemu delu, saj gre za frontend-only rešitev, pri kateri želim imeti podatke pod nadzorom znotraj same spletne strani in brskalnika.
 
 Pri primerjavi z lanskimi rešitvami sem posebej pazil, da so tehnološka pojasnila krajša, vendar bolj povezana z dejanskim delovanjem aplikacije. Namesto splošnega opisa sem se osredotočil na to, kako React, TypeScript in piškotki konkretno pomagajo pri izpolnjevanju obrazca, prikazu podatkov in preprostem objavljanju spletne strani.
+
+\subsubsection{Primer importov in namen knjižnic}
+
+Spodaj je primer dejanskih \texttt{import} stavkov iz aplikacije, kjer je jasno vidno, katere knjižnice in komponente uporabljam:
+
+\begin{lstlisting}
+import { useState, useEffect } from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import CookieConsent from "./components/CookieConsent";
+import Checklist from "./checklist/checklist";
+
+import { PDFDocument, rgb } from "pdf-lib";
+import fontkit from "@pdf-lib/fontkit";
+\end{lstlisting}
+
+Razlaga: knjižnica \texttt{react} omogoča gradnjo vmesnika s komponentami in stanje obrazca (\texttt{useState}, \texttt{useEffect}). Knjižnica \texttt{react-router-dom} skrbi za prehode med stranmi, na primer med začetnim zaslonom, obrazcem in pravnimi stranmi. Komponenta \texttt{CookieConsent} upravlja soglasje za piškotke, komponenta \texttt{Checklist} pa je osrednji del za izpolnjevanje poročila. Knjižnici \texttt{pdf-lib} in \texttt{@pdf-lib/fontkit} uporabljam za generiranje PDF poročila in pravilno delo s pisavami pri izvozu dokumenta.
 
 \subsection{Arhitektura aplikacije}
 
@@ -286,6 +316,18 @@ const exportToPdf = async (formData) => {
 
 Razlaga: V funkciji najprej ustvarim nov PDF dokument, nato po vrsticah zapišem ključne podatke obrazca in na koncu datoteko shranim. Prednost takšne izvedbe je, da uporabnik z enim klikom dobi standardizirano poročilo brez ročnega prepisovanja.
 
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{slike/medifrom_example_moznosti_izvoza_options.png}
+    \caption{Slika 4: Primer možnosti izvoza poročila}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{slike/Pdf_primer_generira_za_izmislejno_osebo.png}
+    \caption{Slika 5: Primer izvoza poročila v PDF}
+\end{figure}
+
 \subsubsection{Preverjanje shranjene izbire}
 
 Ko uporabnik ponovno odpre aplikacijo, mu želim prikazati zadnje stanje obrazca. Zato preberem podatke iz brskalnika in jih uporabim za predizpolnitev vmesnika.
@@ -326,13 +368,16 @@ Na podlagi zadnjega izpisa \texttt{backend-usage-dump.json} sem ugotovil, da je 
 
 \section{Git in verzioniranje}
 
-Git sem uporabljal kot glavni mehanizem za nadzor sprememb. Vsako večjo funkcionalnost sem razvil v ločenem sklopu sprememb in jo zaključil z opisnim \texttt{commit} sporočilom. Tako sem lahko natančno sledil, kdaj sem dodal posamezno funkcijo in zakaj sem jo uvedel.
+Kontrola verzij je v projektu potekala z orodjem Git po postopnem in iterativnem pristopu razvoja. V repozitoriju je zabeleženih 73 commitov v obdobju od 29. 10. 2024 do 20. 1. 2026. Razvoj je potekal predvsem na veji \texttt{main}, občasno pa tudi na razvojni veji \texttt{dev}, kar je omogočilo varno pripravo sprememb in njihovo poznejše združevanje. V zgodovini so vidni tudi merge commiti in vsaj en pull request, zato je bil uporabljen standarden sodelovalni potek dela (branching, pregled sprememb in združevanje).
 
-V praksi je to pomenilo:
+Iz zgodovine commitov je razviden prehod od začetnih manjših popravkov k bolj strukturiranemu razvoju funkcionalnosti. Med pomembnejše faze sodijo implementacija izvoza PDF, izboljšave uporabniškega vmesnika, uvedba GDPR elementov (piškotki, pogoji uporabe, politika zasebnosti), optimizacije postavitve komponent in kasnejši refaktor arhitekture v smeri local-first pristopa. Del starejših commitov vsebuje bolj neformalne opise, v kasnejšem obdobju pa so sporočila bolj standardizirana (na primer \texttt{feat}, \texttt{fix}, \texttt{refactor}, \texttt{chore}), kar izboljša sledljivost sprememb in olajša vzdrževanje kode.
+
+Tak način kontrole verzij je omogočil:
 \begin{itemize}
-    \item po vsaki zaključeni funkcionalnosti sem naredil nov commit,
-    \item pred večjimi popravki sem primerjal trenutno in prejšnjo različico,
-    \item stabilne točke sem označil z oznakami (tag), da sem imel jasno razvojno zgodovino.
+    \item jasno sledljivost razvoja skozi čas,
+    \item varno uvajanje novih funkcionalnosti brez izgube prejšnjih stanj,
+    \item lažje odpravljanje napak in vračanje na stabilne različice,
+    \item boljšo organizacijo timskega dela prek vej in merge postopkov.
 \end{itemize}
 
 \textbf{Primer kode --- beleženje verzije v Gitu:}
@@ -340,14 +385,13 @@ V praksi je to pomenilo:
 \begin{lstlisting}
 git add .
 git commit -m "Dodan izvoz PDF in izboljsan prikaz napredka"
-git tag v1.2.0
 \end{lstlisting}
 
-Razlaga: Prvi ukaz pripravi datoteke za shranjevanje, drugi ustvari novo verzijo z opisom spremembe, tretji pa označi stabilno izdajo. S tem sem si olajšal testiranje in pripravo objav, ker sem se lahko vedno vrnil na preverjeno stanje.
+Razlaga: Prvi ukaz pripravi datoteke za shranjevanje, drugi pa ustvari novo verzijo z opisom spremembe. Tak način beleženja sprememb je zadostoval za jasno sledljivost razvoja in enostavno vračanje na prejšnja stabilna stanja.
 
 \section{Deployment (objava aplikacije)}
 
-Deployment sem izvedel kot objavo statične frontend aplikacije. Ker MediForm ne uporablja ločenega strežniškega dela, je bil postopek enostaven: priprava produkcijskega \texttt{build} paketa in objava na domeni \url{https://mediform.cadez.eu/}.
+Deployment sem izvedel kot objavo statične frontend aplikacije na platformi Vercel. Ker MediForm ne uporablja ločenega strežniškega dela, je bil postopek enostaven: priprava produkcijskega \texttt{build} paketa in objava na domeni \url{https://mediform.cadez.eu/}. V nadaljevanju je verjeten prehod na lokalno gostovanje, saj bi to šoli omogočilo popoln nadzor nad aplikacijo, podatki in načinom posodabljanja.
 
 Postopek objave je potekal po korakih:
 \begin{enumerate}
@@ -358,18 +402,6 @@ Postopek objave je potekal po korakih:
 \end{enumerate}
 
 Tak pristop je bil primeren za šolsko okolje, ker je objava hitra, stroški so nizki, vzdrževanje pa preprostejše kot pri aplikaciji z dodatnim strežnikom.
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.8\textwidth]{slike/medifrom_example_moznosti_izvoza_options.png}
-    \caption{Slika 4: Primer možnosti izvoza poročila}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.8\textwidth]{slike/Pdf_primer_generira_za_izmislejno_osebo.png}
-    \caption{Slika 5: Primer izvoza poročila v PDF}
-\end{figure}
 
 \section{Zaključek}
 
