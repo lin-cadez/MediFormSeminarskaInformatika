@@ -73,21 +73,21 @@
 
 \section*{Zahvala}
 
-Zahvaljujem se mentorju Alešu Volčiniju za strokovno pomoč, usmerjanje in koristne pripombe pri izdelavi seminarske naloge ter pri razvoju aplikacije MediForm.
+Zahvaljujem se mentorju Alešu Volčiniju za pomoč, usmerjanje in koristne pripombe pri izdelavi seminarske naloge ter pri razvoju aplikacije MediForm.
 
-Posebna zahvala gre Heleni Božič Janežič s Srednje zdravstvene šole Ljubljana za sodelovanje, pojasnila glede obstoječega načina dela, posredovana gradiva in sprotne povratne informacije. Zahvaljujem se tudi dijakom, ki so aplikacijo preizkušali in s svojimi predlogi pomagali izboljšati uporabniško izkušnjo.
+Posebej se zahvaljujem Heleni Božič Janežič s Srednje zdravstvene šole Ljubljana za sodelovanje, pojasnila o obstoječem načinu dela, posredovana gradiva in sprotne povratne informacije. Zahvaljujem se tudi dijakom, ki so aplikacijo preizkusili in s svojimi predlogi pomagali izboljšati uporabniško izkušnjo.
 
 \newpage
 
 \section*{Povzetek}
 
-V tem strokovnem poročilu sem predstavil razvoj spletne aplikacije MediForm, ki sem jo izdelal za Srednjo zdravstveno šolo Ljubljana. Aplikacija je namenjena dijakom zdravstvene nege za sprotno in strukturirano izpolnjevanje poročil o praktičnem pouku. Odločil sem se za digitalno rešitev, ker so bila papirna poročila zamudna, neenotna in pogosto izpolnjena šele tik pred rokom oddaje.
+V tem strokovnem poročilu predstavljam razvoj spletne aplikacije MediForm, ki sem jo izdelal za Srednjo zdravstveno šolo Ljubljana. Aplikacija je namenjena dijakom zdravstvene nege za sprotno in strukturirano izpolnjevanje poročil o praktičnem pouku. Za digitalno rešitev sem se odločil zato, ker so bila papirna poročila zamudna, neenotna in pogosto izpolnjena šele tik pred rokom oddaje.
 
-V poročilu sem opisal analizo potreb naročnika, dogovarjanje in komunikacijo s stranko, izbiro tehnologij ter tehnično izvedbo ključnih funkcionalnosti. Ker je končna rešitev zasnovana kot frontend-only aplikacija, podatke shranjujem v piškotke in v lokalno shrambo brskalnika. Tak pristop sem izbral zato, ker je bila aplikacija namenjena preprosti uporabi brez dodatne strežniške infrastrukture, šola pa ima tako večji nadzor nad informacijami in lažje upravlja z objavljeno različico.
+V poročilu opisujem analizo potreb naročnika, potek dogovarjanja in komunikacije s stranko, izbiro tehnologij ter tehnično izvedbo ključnih funkcionalnosti. Ker je končna rešitev zasnovana kot frontend-only aplikacija, podatke shranjujem v piškotke in lokalno shrambo brskalnika. Tak pristop sem izbral zato, ker je aplikacija namenjena preprosti uporabi brez dodatne strežniške infrastrukture, šola pa ima tako večji nadzor nad informacijami in lažje upravlja z objavljeno različico.
 
-Pri vizualni podobi sem logotip najprej generiral s pomočjo ChatGPT, nato pa sem v Canvi dodal še napis MediForm in prilagodil končni videz.
+Pri vizualni podobi sem logotip najprej ustvaril s pomočjo ChatGPT, nato pa sem v Canvi dodal še napis MediForm in prilagodil končni videz.
 
-Ugotovil sem, da je tesna komunikacija s stranko pomembna za uspešen razvoj in da aplikacija resnično olajša delo uporabnikom.
+Ugotovil sem, da je dobra in sprotna komunikacija s stranko zelo pomembna za uspešen razvoj ter da aplikacija uporabnikom dejansko olajša delo.
 
 \textbf{Ključne besede:} spletna aplikacija, MediForm, zdravstvena nega, praktični pouk, React, TypeScript, Tailwind CSS, cookies, localStorage, analiza podatkov
 
@@ -103,31 +103,31 @@ Ugotovil sem, da je tesna komunikacija s stranko pomembna za uspešen razvoj in 
 
 \section{Uvod}
 
-V sodobnem času se šole vse pogosteje srečujejo s potrebo po digitalizaciji administrativnih postopkov. Tudi v zdravstvenem izobraževanju se pojavlja problem, da dijaki poročila o praktičnem pouku pogosto izpolnjujejo prepozno, površno ali neenotno. To zmanjšuje preglednost dela in otežuje sprotno spremljanje opravljenih aktivnosti.
+V današnjem času se šole vse pogosteje srečujejo s potrebo po digitalizaciji administrativnih postopkov. Tudi v zdravstvenem izobraževanju se pojavlja težava, da dijaki poročila o praktičnem pouku pogosto izpolnjujejo prepozno, površno ali neenotno. To zmanjšuje preglednost njihovega dela in otežuje sprotno spremljanje opravljenih aktivnosti.
 
-Na podlagi tega konkretnega problema sem se odločil razviti spletno aplikacijo MediForm. Z njo sem želel dijakom omogočiti, da poročila izpolnjujejo sproti, z vnaprej pripravljenimi možnostmi izbire in z manj ročnega tipkanja. Hkrati sem želel narediti rešitev, ki je dovolj pregledna, varna in preprosta za uporabo v šolskem okolju.
+Zaradi tega konkretnega problema sem se odločil razviti spletno aplikacijo MediForm. Z njo sem želel dijakom omogočiti, da poročila izpolnjujejo sproti, z vnaprej pripravljenimi možnostmi izbire in z manj ročnega tipkanja. Hkrati sem želel izdelati rešitev, ki bi bila dovolj pregledna, varna in preprosta za uporabo v šolskem okolju.
 
 Cilji seminarske naloge so bili naslednji:
 \begin{itemize}
     \item analizirati potrebe naročnika,
     \item razviti spletno aplikacijo za poročanje o zdravstveni negi,
     \item pojasniti uporabljene tehnologije,
-    \item opisati ključne dele kode in razlog za takšno zasnovo,
-    \item pokazati, kako je potekalo delo in komunikacija s stranko,
+    \item opisati ključne dele kode in razloge za takšno zasnovo,
+    \item prikazati, kako je potekalo delo in komunikacija s stranko,
     \item predstaviti rezultate analize uporabe aplikacije.
 \end{itemize}
 
 \section{Teoretični uvod}
 
-Digitalna transformacija v izobraževanju pomeni uvajanje digitalnih tehnologij v učne in administrativne procese. Pri strokovnem in poklicnem izobraževanju je ta prehod še posebej pomemben, ker omogoča boljšo preglednost, hitrejše delo in manj napak pri dokumentiranju. Evropska komisija poudarja, da digitalna orodja izboljšujejo dostopnost informacij in omogočajo učinkovitejše upravljanje izobraževalnih procesov (European Commission, 2020).
+Digitalna transformacija v izobraževanju pomeni uvajanje digitalnih tehnologij v učne in administrativne procese. Pri strokovnem in poklicnem izobraževanju je ta prehod še posebej pomemben, saj omogoča boljšo preglednost, hitrejše delo in manj napak pri dokumentiranju. Evropska komisija poudarja, da digitalna orodja izboljšujejo dostopnost informacij in omogočajo učinkovitejše upravljanje izobraževalnih procesov (European Commission, 2020).
 
-Pri digitalnih obrazcih je pomembno, da so vnosni postopki enostavni in strukturirani. Selwyn (2016) izpostavlja, da digitalni sistemi zmanjšujejo potrebo po ponavljajočem ročnem zapisovanju in omogočajo bolj dosledno obdelavo podatkov. Tudi razvoj oblačnih rešitev, kot je Firebase, prispeva k večji dostopnosti in prilagodljivosti aplikacij, saj podatki niso vezani na eno napravo ali eno lokacijo (Firebase, 2026).
+Pri digitalnih obrazcih je pomembno, da so postopki vnosa podatkov enostavni in strukturirani. Selwyn (2016) izpostavlja, da digitalni sistemi zmanjšujejo potrebo po ponavljajočem ročnem zapisovanju in omogočajo bolj dosledno obdelavo podatkov. Tudi razvoj oblačnih rešitev, kot je Firebase, prispeva k večji dostopnosti in prilagodljivosti aplikacij, saj podatki niso vezani le na eno napravo ali eno lokacijo (Firebase, 2026).
 
-V MediForm sem zato uporabil načela digitalne preglednosti, varnega shranjevanja podatkov in sprotnega beleženja. Takšen pristop je bil primeren za okolje zdravstvene nege, kjer je pomembno, da dijaki poročila izpolnjujejo redno in v čim bolj enotni obliki.
+V MediForm sem zato upošteval načela digitalne preglednosti, varnega shranjevanja podatkov in sprotnega beleženja. Takšen pristop je bil primeren za okolje zdravstvene nege, kjer je pomembno, da dijaki poročila izpolnjujejo redno in v čim bolj enotni obliki.
 
-Pri razvoju spletne aplikacije sem se opiral tudi na osnovna načela spletnih tehnologij. HTML sem uporabil kot strukturo obrazcev, CSS oziroma Tailwind CSS za oblikovanje in preglednost, JavaScript pa za logiko uporabniške interakcije. React mi je omogočil, da sem posamezne dele vmesnika razdelil v komponente in jih lažje ponovno uporabil, TypeScript pa mi je pomagal pri natančnejšem razvoju, ker sem že med pisanjem opazil morebitne napake v tipih.
+Pri razvoju spletne aplikacije sem se opiral tudi na osnovna načela spletnih tehnologij. HTML sem uporabil kot osnovno strukturo obrazcev, CSS oziroma Tailwind CSS za oblikovanje in preglednost, JavaScript pa za logiko uporabniške interakcije. React mi je omogočil, da sem posamezne dele vmesnika razdelil v komponente in jih lažje ponovno uporabil, TypeScript pa mi je pomagal pri natančnejšem razvoju, saj sem že med pisanjem hitreje opazil morebitne napake v tipih.
 
-Za lokalno razvijanje in hitrejše testiranje sem uporabil Vite, ker sem lahko spremembe vmesnika hitro preveril brez dolgotrajnega zaganjanja. To je bilo pomembno predvsem pri delu z več vnosnimi polji, tabelami in izbirnimi seznami, kjer je bilo treba večkrat preveriti, kako se elementi obnašajo na različnih zaslonih. Takšna izbira tehnologij je bila skladna z mojim ciljem, da aplikacijo razvijem pregledno, hitro in dovolj preprosto za šolsko uporabo.
+Za lokalni razvoj in hitrejše testiranje sem uporabil Vite, ker sem lahko spremembe vmesnika hitro preverjal brez dolgotrajnega zaganjanja. To je bilo pomembno predvsem pri delu z več vnosnimi polji, tabelami in izbirnimi seznami, kjer je bilo treba večkrat preveriti, kako se elementi obnašajo na različnih zaslonih. Takšna izbira tehnologij je bila skladna z mojim ciljem, da aplikacijo razvijem pregledno, hitro in dovolj preprosto za šolsko uporabo.
 
 \section{Jedro}
 
@@ -146,11 +146,11 @@ Ko sem prvič stopil v stik s Heleno Božič Janežič s Srednje zdravstvene šo
 
 \subsubsection{Proces dogovarjanja}
 
-Proces dogovarjanja sem razdelil na več faz. Najprej sem prejel papirne obrazce in skupaj z naročnico pregledal, kateri deli so zares potrebni in kateri bi se lahko poenostavili. Na podlagi tega sem zasnoval prvo verzijo aplikacije.
+Proces dogovarjanja sem razdelil na več faz. Najprej sem prejel papirne obrazce in skupaj z naročnico pregledal, kateri deli so zares potrebni in katere bi bilo mogoče poenostaviti. Na podlagi tega sem zasnoval prvo različico aplikacije.
 
-Ko so dijaki začeli aplikacijo uporabljati, sem dobil prve povratne informacije. Ugotovil sem, da so se pri prijavi pojavile težave, zato sem popravil način shranjevanja stanja in izboljšal stabilnost delovanja. Kasneje je naročnica predlagala, da bi bilo bolje, če bi dijaki večino podatkov le označevali z izborom možnosti, ne pa jih ročno vnašali.
+Ko so dijaki začeli aplikacijo uporabljati, sem dobil prve povratne informacije. Ugotovil sem, da so se pri prijavi pojavile določene težave, zato sem popravil način shranjevanja stanja in izboljšal stabilnost delovanja. Kasneje je naročnica predlagala, da bi bilo bolje, če bi dijaki večino podatkov le označevali z izborom možnosti, namesto da jih ročno vnašajo.
 
-V nadaljevanju sem aplikacijo dopolnjeval glede na pripombe iz prakse. Naročnica je posebej poudarila, da mora biti rešitev primerna za uporabo na telefonu, da mora omogočati sprotno izpolnjevanje in da morajo biti nekateri deli obrazca poenostavljeni. Na tej osnovi sem odstranil odvečne elemente in izboljšal uporabniški vmesnik.
+V nadaljevanju sem aplikacijo dopolnjeval glede na pripombe iz prakse. Naročnica je posebej poudarila, da mora biti rešitev primerna za uporabo na telefonu, omogočati sprotno izpolnjevanje in poenostaviti nekatere dele obrazca. Na tej osnovi sem odstranil odvečne elemente in izboljšal uporabniški vmesnik.
 
 \subsubsection{Ključne ugotovitve}
 
@@ -174,9 +174,9 @@ Pri razvoju sem se odločil za naslednji tehnološki sklad:
     \item \textbf{Cookies} in \textbf{localStorage} za shranjevanje stanja v brskalniku.
 \end{itemize}
 
-Za ta izbor sem se odločil, ker omogoča hitro razvojno delo, dobro preglednost kode in enostavno nadgradnjo aplikacije. V produkcijski različici sem se odpovedal strežniškemu delu, saj gre za frontend-only rešitev, v kateri želim imeti podatke pod nadzorom znotraj same spletne strani in brskalnika.
+Za ta izbor sem se odločil, ker omogoča hitro razvojno delo, dobro preglednost kode in enostavno nadgradnjo aplikacije. V produkcijski različici sem se odpovedal strežniškemu delu, saj gre za frontend-only rešitev, pri kateri želim imeti podatke pod nadzorom znotraj same spletne strani in brskalnika.
 
-Pri primerjavi z lanskimi rešitvami sem posebej pazil, da so tehnološka pojasnila krajša, a bolj povezana z dejanskim delovanjem aplikacije. Namesto splošnega opisa sem se osredotočil na to, kako React, TypeScript in piškotki konkretno pomagajo pri izpolnjevanju obrazca, prikazu podatkov in preprostem objavljanju spletne strani.
+Pri primerjavi z lanskimi rešitvami sem posebej pazil, da so tehnološka pojasnila krajša, vendar bolj povezana z dejanskim delovanjem aplikacije. Namesto splošnega opisa sem se osredotočil na to, kako React, TypeScript in piškotki konkretno pomagajo pri izpolnjevanju obrazca, prikazu podatkov in preprostem objavljanju spletne strani.
 
 \subsection{Arhitektura aplikacije}
 
@@ -226,7 +226,7 @@ Razlaga: Funkcija \texttt{saveFormState} ob vsakem pomembnem vnosu shrani celotn
 
 \subsubsection{Piškotki in shranjevanje seje}
 
-Namesto strežniške prijave sem uporabil preprost pristop z brskalniškimi piškotki. Ti so primerni za krajše shranjevanje pomembnih nastavitev, ker jih lahko aplikacija prebere ob naslednjem obisku strani.
+Namesto strežniške prijave sem uporabil preprost pristop z brskalniškimi piškotki. Ti so primerni za krajše shranjevanje pomembnih nastavitev, saj jih lahko aplikacija prebere ob naslednjem obisku strani.
 
 \textbf{Primer kode --- zapis v piškotek:}
 
@@ -243,13 +243,13 @@ const getCookie = (name) => {
 };
 \end{lstlisting}
 
-Razlaga: Funkcija \texttt{setCookie} zapiše podatek skupaj z datumom poteka, \texttt{getCookie} pa ta podatek vrne ob naslednjem odprtju aplikacije. Piškotke sem uporabil za manjše podatke (na primer zadnji izbor uporabnika), ker so hitri za branje in ne zahtevajo strežniške infrastrukture.
+Razlaga: Funkcija \texttt{setCookie} zapiše podatek skupaj z datumom poteka, \texttt{getCookie} pa ta podatek vrne ob naslednjem odprtju aplikacije. Piškotke sem uporabil za manjše podatke, na primer zadnji izbor uporabnika, ker so hitri za branje in ne zahtevajo strežniške infrastrukture.
 
 \subsubsection{Zakaj ni ločenega strežnika}
 
-V zgodnji fazi projekta sem preverjal tudi strežniške možnosti, vendar sem jih v produkcijski različici opustil. Razlog je bil predvsem v tem, da je naročnica želela enostavno rešitev z manj odvisnostmi, šola pa je želela večji nadzor nad informacijami. Zato sem končno različico objavil kot statično spletno stran, kjer so podatki shranjeni lokalno v brskalniku in v piškotkih.
+V zgodnji fazi projekta sem preverjal tudi strežniške možnosti, vendar sem jih v produkcijski različici opustil. Razlog je bil predvsem v tem, da je naročnica želela enostavno rešitev z manj odvisnostmi, šola pa večji nadzor nad informacijami. Zato sem končno različico objavil kot statično spletno stran, kjer so podatki shranjeni lokalno v brskalniku in v piškotkih.
 
-Takšna odločitev je bila smiselna tudi zaradi lažje vzdržljivosti. Če aplikacija ne potrebuje ločenega strežnika, je manj točk, kjer bi lahko prišlo do napake, hkrati pa je objava hitrejša.
+Takšna odločitev je bila smiselna tudi zaradi lažjega vzdrževanja. Če aplikacija ne potrebuje ločenega strežnika, je manj točk, kjer bi lahko prišlo do napake, hkrati pa je objava hitrejša.
 
 \subsubsection{Prikaz napredka obrazca}
 
@@ -320,7 +320,7 @@ Razlaga: Razreda \texttt{grid-cols-1} in \texttt{md:grid-cols-2} določata, da j
 
 \subsubsection{Analiza uporabe aplikacije}
 
-Za preverjanje uporabe sem v razvojni fazi pripravil kratek skript, ki je pregledal lokalno shranjene vnose in iz njih izračunal osnovne statistike. Ta del sem uporabljal samo med testiranjem in ga v produkcijski različici odstrnil, da je šola dobila popoln nadzor nad informacijami ter da v objavljeni aplikaciji ni dodatne analitike, ki bi posegala v zasebnost.
+Za preverjanje uporabe sem v razvojni fazi pripravil kratek skript, ki je pregledal lokalno shranjene vnose in iz njih izračunal osnovne statistike. Ta del sem uporabljal samo med testiranjem in ga v produkcijski različici odstranil, da je šola dobila popoln nadzor nad informacijami in da v objavljeni aplikaciji ni dodatne analitike, ki bi posegala v zasebnost.
 
 Na podlagi zadnjega izpisa \texttt{backend-usage-dump.json} sem ugotovil, da je aplikacijo uporabljalo 17 uporabnikov, skupaj pa je bilo ustvarjenih 95 poročil, kar pomeni povprečno 5,59 poročila na uporabnika. Iz časovne porazdelitve je razvidno, da se je uporaba pojavljala v tednih W04, W05, W06, W07, W08, W12, W13 in W14, pri čemer je bilo največ aktivnosti v osrednjem delu obdobja, ko je bilo poročanje najbolj intenzivno. Analiza tipov izvoza je pokazala 74 izvozov v PDF in 21 izvozov v JSON, zato je jasno, da je bil PDF v praksi glavna oblika za oddajo poročil.
 
@@ -357,7 +357,7 @@ Postopek objave je potekal po korakih:
     \item po objavi sem preveril delovanje obrazca, shranjevanja in izvoza PDF.
 \end{enumerate}
 
-Tak pristop je bil primeren za šolsko okolje, ker je objava hitra, stroški so nizki, vzdrževanje pa je preprostejše kot pri aplikaciji z dodatnim strežnikom.
+Tak pristop je bil primeren za šolsko okolje, ker je objava hitra, stroški so nizki, vzdrževanje pa preprostejše kot pri aplikaciji z dodatnim strežnikom.
 
 \begin{figure}[h]
     \centering
@@ -375,11 +375,11 @@ Tak pristop je bil primeren za šolsko okolje, ker je objava hitra, stroški so 
 
 Razvoj aplikacije MediForm mi je pokazal, da je mogoče z ustreznim načrtovanjem in dobrim sodelovanjem z naročnikom razviti uporabno digitalno rešitev za šolsko okolje. Aplikacija je nastala zato, ker sem želel odpraviti težave, ki so se pojavljale pri ročnem izpolnjevanju poročil o praktičnem pouku.
 
-Ugotovil sem, da je bila najpomembnejša dobra komunikacija s stranko. Sproti sem preverjal, kaj naročnica res potrebuje, in na podlagi njenih pripomb popravljal aplikacijo. To se je izkazalo za pravilno odločitev, saj so bile funkcionalnosti bolj usmerjene v resnične potrebe uporabnikov.
+Ugotovil sem, da je bila najpomembnejša dobra komunikacija s stranko. Sproti sem preverjal, kaj naročnica dejansko potrebuje, in na podlagi njenih pripomb popravljal aplikacijo. To se je izkazalo za pravilno odločitev, saj so bile funkcionalnosti bolj usmerjene v resnične potrebe uporabnikov.
 
-Pri tehnični izvedbi sem se srečal z več izzivi, predvsem pri organizaciji obrazcev, samodejnem shranjevanju podatkov in pripravi izvoza v PDF. Vsak problem sem reševal po korakih in sproti preverjal skupaj z naročnico, zato je bila končna rešitev stabilna in uporabna v praksi.
+Pri tehnični izvedbi sem se srečal z več izzivi, predvsem pri organizaciji obrazcev, samodejnem shranjevanju podatkov in pripravi izvoza v PDF. Vsak problem sem reševal postopno in sproti preverjal skupaj z naročnico, zato je bila končna rešitev stabilna in uporabna v praksi.
 
-Na koncu sem ugotovil, da MediForm uporabnikom olajša delo, zmanjšuje ročno pisanje in omogoča bolj sprotno izpolnjevanje dokumentacije. Zato menim, da je digitalizacija tovrstnih postopkov smiselna in koristna rešitev za izobraževalno okolje.
+Na koncu sem ugotovil, da MediForm uporabnikom olajša delo, zmanjšuje količino ročnega pisanja in omogoča bolj sprotno izpolnjevanje dokumentacije. Zato menim, da je digitalizacija tovrstnih postopkov smiselna in koristna rešitev za izobraževalno okolje.
 
 \newpage
 
@@ -423,7 +423,7 @@ Izvorna koda projekta je dostopna na GitHubu:
 
 \section*{Izjava o avtorstvu}
 
-Izjavljam, da je strokovno poročilo \textit{Spletna aplikacija MediForm za digitalno poročanje o zdravstveni negi} v celoti moje avtorsko delo, ki sem ga izdelal/-a samostojno s pomočjo navedene literature in pod vodstvom mentorja.
+Izjavljam, da je strokovno poročilo \textit{Spletna aplikacija MediForm za digitalno poročanje o zdravstveni negi} v celoti moje avtorsko delo, ki sem ga izdelal samostojno s pomočjo navedene literature in pod vodstvom mentorja.
 
 \vspace{1.5cm}
 
