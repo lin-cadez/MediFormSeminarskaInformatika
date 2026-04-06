@@ -1,0 +1,308 @@
+ 
+Splošna matura:
+Seminarska naloga pri računalništvu
+APLIKACIJE IN INFORMACIJSKI SISTEMI – SOCIALNO OMREŽJE
+Mentor: mag. Matjaž Majnik	Avtor: Filip Štremfelj, G 4. B
+Ljubljana, april 2025 
+Zahvala
+Zahvaljujem se mentorju prof. Matjažu Majniku za pomoč in vodenje pri izdelavi seminarske naloge.
+Povzetek
+V tej seminarski nalogi je predstavljen razvoj in delovanje moje spletne aplikacije, ki posnema znana socialna omrežja, kot sta Instagram in Facebook. V uvodnem delu je opisano načrtovanje spletnih aplikacij in različni diagrami, ki nam pomagajo pri njihovi organizaciji in razumevanju delovanja. Nato so predstavljena in opisana različna orodja in programi, ki jih uporabljamo pri razvoju večjih in kompleksnejših spletnih aplikacij. Poseben poudarek je na razlagi koncepta knjižnice Laravel, ki služi kot temelj za razvoj celotne aplikacije. Sledi razlaga delovanja in implementacije vseh funkcionalnosti socialnega omrežja, kot je deljenje objav, komentiranje, všečkanje in meduporabniško spoprijateljevanje.
+Ključne besede: načrtovanje spletnih aplikacij, orodja za razvoj programske opreme, razvoj spletne aplikacije, socialna omrežja
+ 
+Kazalo vsebine
+Zahvala	3
+Povzetek	4
+Kazalo slik	6
+1	Uvod	9
+2	Načrtovanje	10
+2.1 Modeli za načrtovanje	10
+2.2 Orodja	10
+2.3 Osnovno delovanje Laravel-a	12
+3	Funkcionalnost	15
+4	Delovanje	15
+4.1	Zgradba podatkovne baze	15
+4.2	Prijava in registracija	16
+4.3	Domača stran	17
+4.4	Deljenje objav in komentarjev	22
+4.5	Osebni profili in spoprijateljevanje	25
+4.6	Meduporabniška sporočila	27
+4.7	Iskanje uporabnikov	29
+4.8	Urejanje profila	29
+5	Zaključek	31
+1	Bibliografija	31
+Izjava o avtorstvu	33
+
+Kazalo slik
+Slika 1: logotip programskega jezika PHP	11
+Slika 2: logotip programskega jezika JavaScript	11
+Slika 3: logotip SUPB-ja MySQL	12
+Slika 4: Logotip PHP-jeve knjižnice Laravel	13
+Slika 5: Primer posredovanja datoteke	13
+Slika 6: Primer odziva s klicem funkcije	13
+Slika 7: Primer funkcije, v kateri prek model-a dostopamo do podatkov v tabeli	14
+Slika 8: Primer model-a	14
+Slika 9: Prijavno okence	16
+Slika 10: Stranski meni	17
+Slika 11: Spustni meni	17
+Slika 12: Funkcija index	18
+Slika 13: Primer izpisa objave	18
+Slika 14: Klic funkcije delete v ObjavaControllerju	19
+Slika 15: Izpis gumba za izbris objave	19
+Slika 16: Funkcija delete v ObjavaController-ju	19
+Slika 17: Primer uporabe protokola AJAX v funkciji vseckajObjavo	20
+Slika 18: Funkcija vseckaj v ObjavaController-ju	21
+Slika 19: Funkcija shraniObjavo v ObjavaController-ju	21
+Slika 20: Vnosni polji pri ustvarjanju nove objave	22
+Slika 21: Primer elementa form	22
+Slika 22: Splošno povezovanje funkcij z Route-om prek funkcije resource(klicane so istoimenske funkcije)	22
+Slika 23:Funkcija store v ObjavaController-ju	23
+Slika 24: Izgled izrisa objave v novem okencu	24
+Slika 25: Primer uporabe funkcije foreach pri izpisovanju komentarjev	24
+Slika 26: Primer posredovanja podatkov v URL-ju prek Route-a	24
+Slika 27: Funkcija viewProfile v UserController-ju	25
+Slika 28: Izpis statistike v view-u uporabniškega profila	26
+Slika 29: Funkcija dodajPrijatelja v PrijateljstvoController-ju	26
+Slika 30: Obvestilo o novi o prošnji za prijateljstvo	27
+Slika 31: Gumb na profilni strani	27
+Slika 32: Povezave do pogovornih okenc	27
+Slika 33: Izpis sporočil in filtriranje na prejeta in poslana sporočila	28
+Slika 34: Izgled pogovornega okenca	28
+Slika 35: Primer uporabe ukaza orWhere	29
+Slika 36: Izgled iskalnega okna	29
+Slika 37: Urejanje profila	30
+
+
+ 
+1	Uvod
+V sodobni digitalni dobi imajo spletne aplikacije ključno vlogo pri povezovanju ljudi, izmenjavi informacij in ustvarjanju skupnosti. Ene izmed najvplivnejših platform za to so prav socialna omrežja, ki uporabnikom omogočajo, da izrazijo svoja mnenja, delijo njim priljubljene vsebine in vzpostavljajo stike z drugimi. Namen te seminarske naloge je predstaviti razvoj lastne spletne aplikacije, ki temelji na konceptu socialnega omrežja.
+Aplikacija uporabnikom omogoča ustvarjanje profilov, objavljanje vsebin, komentiranje ter medsebojno interakcijo prek funkcionalnosti spoprijateljevanja in medsebojnega pošiljanja sporočil. Projekt sem zasnoval z namenom poglobljenega razumevanja razvoja spletnih aplikacij ter uporabe sodobnih tehnologij in pristopov.
+ 
+2	Načrtovanje
+Preden začnemo s samim grajenjem spletne aplikacije, moramo narediti grob načrt njenega delovanja. To vključuje vse funkcije in storitve, ki jih bo aplikacija ponujala, prav tako pa tudi njeno notranje delovanje in strukturo, kot so recimo tabele podatkovne baze oziroma zgradbe razredov, če uporabljamo programski jezik, ki omogoča OOP(Object-oriented programming oz. objektno usmerjeno programiranje).
+
+2.1	Modeli za načrtovanje
+Kot standard za načrtovanje in modeliranje računalniških sistemov se je uveljavil UML(Unified Modelling Language), ki ga sestavlja 14 različnih diagramov. Najpomembnejša in najpogosteje uporabljena med temi sta diagram primerov uporabe (use-case diagram) in razredni diagram (class diagram). 
+Diagram primerov uporabe poveže uporabnika z informacijskim sistemom oziroma aplikacijo in prikaže vse možne funkcije, ki so dostopne posameznemu uporabniku. Storitve aplikacije porazdeli med različne vrste uporabnikov, če imajo te različne vloge v sistemu. Razredni diagram nam omogoča načrtovanje in vizualizacijo razredov v informacijskem sistemu. Vsakemu razredu opredelimo atribute in metode in jih nato med seboj povežemo z relacijami.
+Še en diagram, ki je prav tako ključen pri načrtovanju aplikacij, oziroma podrobneje podatkovnih baz, je ER ali entitetno-relacijski model. Z njim lahko v podatkovni bazi opredelimo različne tabele in definiramo njihovo strukturo ter atribute. Tabele nato med seboj smiselno povežemo z relacijami. Nastane podroben načrt za izdelavo podatkovne baze.
+2.2 Orodja
+Po izdelavi načrta moramo za začetek razvoja izbrati prava orodja, ki nam bodo omogočila čim bolj preprosto, robustno in učinkovito realizacijo aplikacije.
+Še najpomembnejša je izbira pravega programskega jezika, na podlagi katerega lahko nato izberemo še ostala orodja. V moji spletni aplikaciji je uporabljen programski jezik PHP, ki se brezhibno integrira v HTML5. HTML služi kot nekakšen temelj za grajenje spletnih aplikacij, na katerem slonijo vse njene ostale funkcionalnosti. Sestavljen je iz osnovnih gradbenih elementov, te pa nato lahko urejamo in po želji prilagajamo. PHP omogoča povezovanje HTML-ja s podatkovnimi zbirkami in mu dodaja dinamičnost, namreč vključuje logiko, s katero lahko glede na shranjene ali pridobljene podatke spreminjamo izgled in delovanje aplikacije. 
+Podobno funkcionalnost kot PHP ponuja tudi JavaScript, a ne za pridobivanje in predelovanje uporabnikovih vnosov, saj te s PHP-jem lažje predelamo. JavaScript nam omogoča preprosto manipuliranje z elementi HTML-ja in daje spletnim stranem interaktivno plat. 
+Za stalno spreminjanje izgleda aplikacije uporabljamo jezik CSS, s katerim oblikujemo HTML-jeve elemente.
+Ključna razlika med načinom vnosa podatkov v podatkovno zbirko PHP-ja in JavaScript-a je PHP-jev sistem form. Form je HTML-jev element zgrajen iz vnosnih polj, prek katerega PHP pridobi uporabnikove vnose in te nato predela ter vnese v bazo podatkov. Pri tem se spletna aplikacija osveži. JavaScript uporablja sistem AJAX(Asynchronous JavaScript And XML), ki v bazo vnese podatke, ne da bi pri tem osvežil spletno stran. AJAX se uporablja za manjše vnose ali spremembe, kot je na primer prištevanje všečkov.
+
+ 
+Slika 1: logotip programskega jezika PHP
+
+ 
+Slika 2: logotip programskega jezika JavaScript
+
+Za zapis podatkov v tabele uporabljamo SUPB-je. Z njimi lahko vnašamo in posodabljamo podatke ter jih nato iz tabel pridobivamo. V mojem socialnem omrežju sem uporabil SUPB MySQL.
+ 
+Slika 3: logotip SUPB-ja MySQL
+
+Veliko vlogo pri razvoju spletnih aplikacij imajo tudi knjižnice. To je programska oprema, ki olajša oziroma skrajša sintakso programskega jezika ter mu posledično doda novo funkcionalnost. V primerni aplikaciji je uporabljena PHP-jeva knjižnica Laravel. Ta aplikacijo razdeli na tri razdelke in omogoča lažjo pridobivanje in obdelovanje podatkov iz podatkovnih baz. Uporabljena je tudi JavaScript-ova knjižnica JQuery, ki olajša manipuliranje elementov na DOM-u(Document Object Model) in pošiljanje HTTP zahtev prek sistema AJAX. Prav tako je uporabljena knjižnica Bootstrap za prilagajanje aplikacije na zaslone različnih velikosti.
+
+2.3 Osnovno delovanje Laravel-a
+Laravel-ova preprosta sintaksa omogoča hiter in učinkovit razvoj spletnih aplikacij. Deluje na principu model, controller, view(MCV). Model je kot opis posamezne tabele. V njem je podana struktura tabele, njen primarni ključ in povezave oziroma relacije z drugimi tabelami. Controller je vmesnik med model-om in view-om. Sestavljen je iz funkcij, ki iz view-a model-u posredujejo podatke ali pa jih iz model-a pridobi in nato vrne v view. View je kot nekakšen končni produkt Laravel-a tj. izgled aplikacije, ki je prikazan uporabniku. V view-u, z uporabo logičnih funkcij, kot je funkcija if, še dokončno filtriramo in prilagodimo izgled aplikacije za posameznega uporabnika. 
+ 
+Slika 4: Logotip PHP-jeve knjižnice Laravel
+
+Za obdelovanje uporabnikovih get zahtev Laravel uporablja vgrajen razred Route, ki vključuje funkcije, kot sta na primer get in post. Z uporabo ene ali druge HTTP strežniku povemo, v kakšni obliki bo pridobil podatke in na kakšen način naj se odzove. Zahteve tipa get se uporabljajo za pridobivanje informacij ali datotek s strežnika prek HTTP protokola. Z njimi ne spreminjamo stanja podatkovnih baz ali datotek na strežniku in prek njih ne pošiljamo zasebnih podatkov. Zahteve tipa post so namenjene posredovanju podatkov strežniku, saj podatkov ne prenaša v samem URL-ju zahteve, kot to stori zahteva get. Prek zahteve get prav tako lahko prenašamo podatke, a te ne morejo direktno spreminjati stanja na strežniku.
+Z Laravel-om lahko, takoj ko sprejmemo zahtevo, opredelimo, iz katerega podnaslova naše spletne aplikacije ta prihaja in se nanjo nato ustrezno odzovemo bodisi le z odzivom nove PHP-jeve datoteke, kot to strežnik naredi po navadi, bodisi s klicem funkcije v željenem controllerju.
+ 
+Slika 5: Primer posredovanja datoteke
+
+ 
+Slika 6: Primer odziva s klicem funkcije
+V controller-ju imamo dostop do model-a. Z njim lahko prek SQL stavkov dostopamo do podatkov v tabeli, ki jo ta model opisuje, oziroma vanjo dodajamo nove zapise. Te podatke nato posredujemo view-u.
+ 
+Slika 7: Primer funkcije, v kateri prek model-a dostopamo do podatkov v tabeli
+
+Model sestavljajo opis tabele in funkcije, ki opisujejo relacije model-ove tabele z drugimi tabelami.
+ 
+Slika 8: Primer model-a
+ 
+3	Funkcionalnost
+Svoje različico socialnega omrežja sem snoval na podlagi znanih socialnih omrežij, kot so Instagram, Facebook, itd. V lastno različico sem vključil temeljno funkcionalnost teh omrežij, tj. objave, komentarje, prijateljstva in medsebojna sporočila.
+Vsak uporabnik se mora za uporabo aplikacije najprej prijaviti, zato vsakega novega uporabnika ob vstopu na spletno aplikacijo ta preusmeri na podstran s prijavnim okencem z gumbom za prijavo, gumbom za registracijo in gumbom za pozabljeno geslo.
+Po uspešni prijavi lahko uporabnik dostopa do socialnega omrežja. Če se je uporabnik prijavil v že obstoječi račun, se mu na domači strani prikažejo najnovejše objave njegovih prijateljev.
+Uporabnik lahko sam ustvari novo objavo s pritiskom na gumb »Objavi«. Drugi uporabniki lahko pod objave komentirajo, jih všečkajo ali pa jih shranijo, medtem ko lahko uporabnik objavo, ki jo je delil, tudi izbriše.
+Uporabniki lahko med seboj pošiljajo prošnje za prijateljstva, ki jih lahko naslovniki prošenj sprejmejo ali zavrnejo. Gumb za dodajanje prijateljev se nahaja na profilu posameznega uporabnika. Na tej strani so prikazane tudi objave uporabnika in statistika prijateljev, všečkov itd. Prijatelji si lahko med seboj pošiljajo zasebna sporočila. Uporabnik lahko s pritiskom na gumb »Išči uporabnike« najde druge uporabnike socialnega omrežja in s pritiskom na njihova uporabniška imena obišče njihove profile.
+4	Delovanje
+4.1	Zgradba podatkovne baze
+Podatkovno bazo aplikacije sestavlja 7 glavnih tabel, v katerih hranimo podatke za vse uporabnike, objave, komentarje, prijateljstva, všečke, shranjene objave in sporočila. Te so med seboj povezane prek tujih ključev, ki opredeljujejo različne relacije.
+Poznamo tri različne vrste relacij: ena-proti-ena, ena-proti-mnogo in mnogo-proti-mnogo. Relacija ena-proti-ena vsakemu elementu iz ene tabele dodeli največ en element iz druge tabele. Relacije ena-proti-mnogo enemu elementu v prvi tabeli dodeli več elementov v drugi tabeli, medtem ko enemu elementu v drugi tabeli dodeli največ en element v prvi tabeli. Relacija mnogo-proti-mnogo v resnici ni uresničljiva v praksi in zahteva vmesno tabelo, ki je z ostalima dvema tabelama povezana z relacijo ena-proti-mnogo. Mnogo-proti-mnogo več elementom obeh tabel dodeli več elementov druge tabele. 
+Relacija ena-proti-ena se uporablja le redko in prav tako ni uporabljena v moji aplikaciji. Relacija ena-proti-mnogo je uporabljena med tabelama uporabniki in objave in tako omogoča uporabniku lastništvo večih objav, a eni objavi opredeli le enega uporabnika, objavitelja. 
+V vmesni tabeli relacije mnogo-proti-mnogo hranimo tuja ključa tabel, ki jih povezujemo. Ta struktura pa nam prav tako omogoča, da poleg primarnih ključev elementov tabel shranimo tudi druge podatke, kot je recimo vsebina sporočila, če gre za vmesno tabelo sporočil. Ta povezuje dva uporabnika, tako da shrani njuna primarna ključa, prav tako pa v isto vrstico shrani še vsebino sporočila in datum pošiljanja.
+Komentarji so prav tako primer vmesne tabele, v katero shranimo primarna ključa uporabnika, ki je napisal komentar, in objave, pod katero je bil komentar napisan, ter vsebino komentarja. Isti koncept uporabljata tabeli shranjenih objav, všečkov in prijateljstev, le da v njih ne shranjujemo dodatnih podatkov.
+4.2	Prijava in registracija
+Ko še neprijavljen uporabnik pride na spletno stran, ga pošljemo na prijavno okno. Na njem sta vnosni polji za uporabniško ime in geslo in povezavo do okenca za registracijo. V Route-u povežemo podstran, na kateri se nahaja prijavno okence, s funkcijo login v AuthController-ju. 
+ 
+Slika 9: Funkcija login v AuthController-ju
+V njej s funkcijo attempt preverimo, če so podatki skladni s podatki, ki jih hranimo v tabeli users. Če so, uporabniko dodelimo žeton, ki aplikaciji pove, da je uporabnik prijavljen in da se ne rabi ponovno prijaviti oziroma ga ni potrebno preusmeriti na prijavno okence. Odjavljanje deluje prav na ta način, da uporabniku vzamemo prijavni žeton.
+
+ 
+Slika 10: Prijavno okence
+Registracija deluje z klicanjem funkcije create v RegisterController-ju. Z uporabo razreda Hash geslo zašifriramo.
+ 
+Slika 11: Funkcija create v RegisterController-ju
+
+
+
+
+4.3	Domača stran
+Po prijavi uporabnika preusmerimo na domačo stran. Vse strani aplikacije vsebujejo glavo in levi stranski meni. V glavi sta gumba za iskanje uporabnikov in ustvarjanje nove objave ter trije gumbi za domačo stran, celozaslonski način in spustni meni s povezavami pomembnimi za uporabnika.
+ 
+Slika 12: Stranski meni
+ 
+Slika 13: Spustni meni
+
+Na domači strani uporabniku prek funkcije index, ki jo kličemo iz HomeController-ja, izpišemo najnovejše objave njegovih prijateljev. To storimo tako, da iz tabele najprej z Eloquent-ovo poenostavljeno SQL sintakso pridobimo vsa prijateljstva trenutnega uporabnika. Ker v tabeli prijateljstva hranimo primarni ključ obeh uporabnikov, lahko iz teh prijateljstev pridobimo tudi podatke o uporabnikih samih, ki jih hranimo v tabeli users. Te uporabimo za pridobivanje vseh objav teh uporabnikov, ki jih nato uredimo po datumu objave, tako da so najnovejše objave na začetku. Končno kolekcijo objav nato posredujemo view-u, kjer jih formatiramo in izpišemo.
+ 
+Slika 14: Funkcija index
+V view-u uporabimo Laravel-ovo integrirano funkcijo foreach, ki iterira skozi vse elemente kolekcije oziroma tabele. Tako lahko vzamemo uniformiran format in ravnaje po njem izpisujemo objave.
+ 
+Slika 15: Primer izpisa objave
+
+Vsak izpis objave vključuje 4 gumbe: gumb za povečavo, všečkanje, shranjevanje objave in, če smo objavo objavili mi, tudi gumb za izbris objave. Prav tako lahko s pritiskom na uporabniško ime obiščemo objaviteljev osebni profil.
+Gumb za izbris objave je v resnici povezava na podstran, s katero prek Route-a kličemo funkcijo delete v ObjavaController-ju, v povezavi pa posredujemo primarni ključ objave, ki jo želimo izbrisati.
+ 
+Slika 16: Klic funkcije delete v ObjavaControllerju
+
+ 
+Slika 17: Izpis gumba za izbris objave
+
+V funkciji najprej uporabimo vgrajeno funkcijo findOrFail, ki v tabeli Objava poskuša najti vnos, ki ima enak primarni ključ kot vrednost, ki smo jo podali v naslovu. Nato preverimo, če je prijavljeni uporabnik sploh tisti, ki je objavo delil in če objava, ki jo iščemo, sploh obstaja. Nato poiščemo vse komentarje in všečke, ki pripadajo tej objavi, in jih prav tako izbrišemo. Če ima objava sliko, to izbrišemo iz strežnikove shrambe in na koncu izbrišemo še vrstico v podatkovni bazi.
+ 
+Slika 18: Funkcija delete v ObjavaController-ju
+
+Objave lahko všečkamo. Gumb za všečkanje deluje po principu AJAX-a. Gumbu dodelimo CSS-ov razred in tako lažje prepoznamo, kdaj ga uporabnik pritisne. Vanj prav tako s HTML-jevemi atributi data vnesemo podatke, ki jih nato uporabimo v JavaScript-u za pošiljanje zahteve post. V AJAX-ovo zahtevo moramo prav tako vključiti csrf-token. Ta potrdi, da zahteva prihaja iz verodostojnega vira. V sami zahtevi pošljemo le primarni ključ objave, ki bi jo radi všečkali, saj do identifikatorske številke trenutnega uporabnika lahko dostopamo že v controller-ju. Če je pošiljanje AJAX-a uspešno, posodobimo stanje všečkov objave. V nasprotnem primeru pa z uporabo JavaScript-ovega vtičnika toaster uporabniku izpišemo opozorilo o napaki. 
+ 
+Slika 19: Primer uporabe protokola AJAX v funkciji vseckajObjavo
+Dodeljevanje všečka se nadaljuje v ObjavaController-ju. Tu najprej iz zahteve preberemo posredovano identifikatorsko številko objave, ki jo nato najdemo v tabeli. Tako preverimo tudi, če je uporabnik to objavo že všečkal in všeček v tem primeru iz tabele izbrišemo, saj je uporabnik s ponovnim pritiskom na gumb v resnici želel objavi odvzeti všeček. V nasprotnem primeru v tabelo vnesemo novo vrstico, ki vsebuje uporabnikov primarni ključ in primarni ključ objave.
+ 
+Slika 20: Funkcija vseckaj v ObjavaController-ju
+Shranjevanje objav pravzaprav deluje na enak način, le da v gumbu pod atribut data-url podamo drug naslov, ki ga v Route-u vežemo s funkcijo shraniObjavo v ShranjenaObjavaController-u. V njej najprej preverimo, če je uporabnik to objavo že shranil in v tem primeru izbrišemo vrstico, v kateri povezujemo njuna primarna ključa. V nasprotnem primeru ustvarimo nov vnos v tabelo.  
+Slika 21: Funkcija shraniObjavo v ObjavaController-ju
+
+Do shranjenih objav lahko uporabnik dostopa prek spustnega menija v glavi spletne aplikacije. Ob pritisku na gumb shranjene objave uporabnika preusmerimo na view, v katerem s funkcijo vrniShranjeneObjave v ShranjenaObjavaController-ju izpišemo uporabnikove shranjene objave, urejene padajoče po datumu shranjenja.
+4.4	Deljenje objav in komentarjev
+Uporabnik lahko ustvari novo objavo s pritiskom na gumb »Objavi« v glavi spletne aplikacije. Ob pritisku na gumb se odpre okence, v katerem je HTML-jev element form z dvema tekstovnima vnosnima poljema in gumbom za pošiljanje forma.
+ 
+Slika 22: Vnosni polji pri ustvarjanju nove objave
+
+Okence je v resnici podstran aplikacije, ki jo z JavaScript-om odpremo na trenutnem spletnem mestu. Form odda zahtevo post na podstran, ki jo specificiramo v form-ovem atributu action. V tem primeru je v atributu action uporabljena Laravel-ova funkcija route, ki pravo povezavo najde prek razreda Route, v katerem smo to povezavo definirali in ji dodelili funkcijo store v ObjavaController-ju. Form ima tudi atribut enctype, ki omogoča pošiljanje datotek.
+ 
+Slika 23: Primer elementa form
+
+ 
+Slika 24: Splošno povezovanje funkcij z Route-om prek funkcije resource(klicane so istoimenske funkcije)
+
+V funkciji store najprej preverimo, če zahteva, ki smo jo prejeli, vsebuje polja oz. podatke, ki jih nujno potrebujemo za vnos nove objave v tabelo. V tem primeru je to vsebina. Nato ustvarimo novo objavo in ji dodelimo pridobljene podatke. Če zahteva poleg vsebine vsebuje tudi sliko, jo dodamo objavi. V tabelo v resnici dodamo le ime datoteke, v kateri je shranjena slika, saj je večje datoteke nesmiselno in nepraktično shranjevati v baze podatkov. Te po navadi shranjujemo lokalno na strežniku in do njih dostopamo prek direktorijev. Na koncu funkcija obvesti uporabnika o uspešnosti oziroma neuspešnosti objavljanja.
+ 
+Slika 25:Funkcija store v ObjavaController-ju
+
+Objavo si lahko podrobneje ogledamo s pritiskom na gumb z ikono očesa. Ta v okencu odpre view objave. Prikaz sestavlja uporabniško ime objavitelja, sama vsebina objave, gumba za shranjevanje in izbris objave, gumb za všečkanje objave ter vsi komentarji, ki pripadajo tej objavi.
+ 
+Slika 26: Izgled izrisa objave v novem okencu
+
+View pridobi podatke o objavi prek funkcije show v ObjavaController-ju. Dodatnih podatkov o komentarjih ni potrebno posredovati, saj te lahko dobimo skozi funkcijo komentar v model-u Objava.
+ 
+Slika 27: Primer uporabe funkcije foreach pri izpisovanju komentarjev
+
+Pod objavo lahko uporabniki komentirajo. Gumb za deljenje komentarjev je dostopen uporabnikom v okencu, ki se odpre, ko objavo povečamo oziroma, ko jo odpremo v novem oknu brskalnika. Ta deluje podobno kot gumb za deljenje objav, namreč odpre novo okno z elementom form in enim vnosnim poljem. Ključna razlika pa je, da v povezavi podstrani, ki se odpre v okencu, podamo tudi identifikatorsko številko objave, pod katero bi radi komentirali. Tako lahko funkciji store v KomentarController-ju, ki je enaka funkciji store v ObjavaController-ju, le da v komentarje ne shranjujemo slik, posredujemo informacijo, s katero lahko identificiramo objavo.
+ 
+Slika 28: Primer posredovanja podatkov v URL-ju prek Route-a
+
+Uporabnik, ki je pod objavo komentiral, lahko svoj komentar izbriše. To stori s pritiskom na gumb za izbris komentarja. Ta vsebuje povezavo z identifikatorskim številom komentarja, ki jo v Route-u vežemo s funkcijo delete v KomentarController-ju.
+
+4.5	Osebni profili in spoprijateljevanje
+Vsak uporabnik ima lastno profilno stran. Na njej so prikazane vse objave, ki jih je delil, prav tako pa je na njej izpisana splošna statistika števila prijateljev, objav in všečkov. 
+Najprej z Route-om kličemo funkcijo viewProfile v UserController-ju in ji posredujemo primarni ključ uporabnika, katerega profil si želimo ogledati. Funkcija viewProfile najde uporabnika v tabeli in vrne view profila in podatke o uporabniku.
+ 
+Slika 29: Funkcija viewProfile v UserController-ju
+
+V view-u najprej izrišemo sliko uporabnika, če jo ta ima, in njegovo uporabniško ime. V isti vrsti izpišemo še statistiko. Število prijateljev pridobimo z uporabo funkcije izpisiPrijatelje v PrijateljstvoController-ju, ki je le SQL stavek, s katerim preštejemo vse vnose v tabelo prijateljstva, ki vsebujejo uporabnikovo identifikatorsko številko. Enako storimo s preštevanjem všečkov, le da uporabimo VsecekController. Za preštevanje objav uporabimo funkcijo v model-u User, ki ga povezuje z model-om Objava in tako opisuje relacijo med njihovima tabelama v podatkovni bazi. S to funkcijo pridobimo vse objave, ki jih je delil uporabnik. Da jih preštejemo pa uporabimo PHP-jevo funkcijo count.
+ 
+Slika 30: Izpis statistike v view-u uporabniškega profila
+
+Gumb za pošiljanje prošnje za prijateljstvo se nahaja pod uporabniškim imenom. Gumb je HTML-jev button element, v katerega z data atributi vnesemo podatke o pošiljatelju in naslovniku prošnje ter URL-naslov, na katerega z AJAX-em pošljemo zahtevo tipa post. JavaScript-ova funkcija za pošiljanje zahteve je podobna tisti, ki smo jo uporabili za dodeljevanje všečkov, le da tokrat controller-ju posredujemo obe identifikatorski številki. Prek Route-a kličemo funkcijo dodajPrijatelja v PrijateljstvoController-ju. V njej preverimo, če prijateljstvo ali prošnja za prijateljstvo med tema dvema uporabnikoma že obstaja in jo nato, v primeru da ne, ustvarimo. Prošnja za prijateljstvo in sprejeto prijateljstvo se v tabeli razlikujeta le za vrednost atributa sprejeto. Tako prihranimo na prostorski kompleksnosti aplikacije, saj za prošnje in prijateljstva ni potrebno ustvarjati dveh različnih tabel in v njih hraniti identičnih podatkov. 
+ 
+Slika 31: Funkcija dodajPrijatelja v PrijateljstvoController-ju
+
+Obvestilo o novi prošnji za prijateljstvo se uporabniku pokaže v levem stranskem meniju. Za vsako prošnjo je navedeno uporabniško ime pošiljatelja in še gumba za sprejetje ali zavrnitev prošnje. Oba gumba delujeta podobno kot gumb za pošiljanje prošnje, le da pošiljata zahteve na različna naslova. Funkcija za sprejem prošnje v PrijateljstvoController-ju deluje tako, da najde vnos v tabeli, ki opisuje prošnjo, ki jo bi radi sprejeli, in njen atribut, ki opisuje stanje prošnje, nastavi na pozitivno stanje. Funkcija za zavrnitev pa, potem ko najde pravi vnos, tega iz tabele izbriše.
+ 
+Slika 32: Obvestilo o novi o prošnji za prijateljstvo
+
+Prijateljstvo lahko sprejmemo ali zavrnemo tudi na profilni strani uporabnika. Tam najdemo tudi gumb za preklic prijateljstva. Ta deluje po enakem principu kot ostali prej opisani gumbi in vnos, ki predstavlja to prijateljstvo, izbriše.
+ 
+Slika 33: Gumb na profilni strani
+
+4.6	Meduporabniška sporočila
+V levem stranskem meniju so izpisani vsi prijatelji trenutnega uporabnika. Ob kliku nanje se nam odpre pogovorno okence z uporabnikom, na katerega smo pritisnili.
+ 
+Slika 34: Povezave do pogovornih okenc
+Pogovorno okno sestavljajo izpis že poslanih sporočil in besedilno vnosno polje. Za pridobivanje kolekcije vseh sporočil uporabimo funkcijo show v SporociloController-ju, ki view-u vrne vsa sporočila, ki imajo shranjena primarna ključa trenutnega uporabnika in uporabnika, s komer govorimo. V view-u nato uporabimo stavek foreach in iteriramo skozi vsa sporočila ter jih izpišemo, zraven pa preverjamo, če je sporočilo poslal uporabnik ali sogovorec. 
+ 
+Slika 35: Izpis sporočil in filtriranje na prejeta in poslana sporočila
+Ob pritisku na gumb za pošiljanje sporočila na strežnik pošljemo post zahtevo, ki SporociloController-ju posreduje informacije o vsebini sporočila in identifikatorskem številu naslovnika sporočila. Sporočilo nato shranimo v tabelo sporocila in v prvi atribut, ki shranjuje primarni ključ uporabnikov, zapišemo primarni ključ sporočevalca, v drugi atribut pa primarni ključ naslovnika. Tako lahko pri izpisu razberemo, kdo je sporočilo poslal komu.
+ 
+Slika 36: Izgled pogovornega okenca
+4.7	Iskanje uporabnikov
+Ob pritisku na gumb »Išči uporabnike« na vrhu aplikacije uporabnika preusmerimo na podstran oziroma view, na katerem lahko išče med obstoječimi uporabniki. View sestavljata element form s tekstovnim vnosnim poljem in tabela najdenih uporabnikov. Uporabnike iščemo po uporabniškem imenu in e-naslovu. Za pridobivanje podatkov o uporabniku uporabimo funkcijo isciUporabnike v UserController-ju, ki jo z Route-om povežemo s podstranjo, kjer te podatke izpisujemo. V tej funkciji uporabimo Eloquent-ov ukaz orWhere, ki omogoča ekskluzivno iskanje med več atributi iste tabele. To pomeni, da je lahko eden ali drug element skladen z zahtevanim pogojem, medtem ko če bi uporabili le ukaz where, bi morala biti skladna oba pogoja. Torej bi v našem primeru uporabniško imenu in e-naslov iskanega uporabnika morala vsebovati iskan niz znakov.
+ 
+Slika 37: Primer uporabe ukaza orWhere
+
+Po iskanju se izpišejo vsi najdeni uporabniki in povezave do njihovih profilov.
+ 
+Slika 38: Izgled iskalnega okna
+
+4.8	Urejanje profila
+V spustnem meniju lahko uporabnik pritisne na gumb »uredi profil«. Ob pritisku ga preusmerimo na podstran s elementom form in vnosnimi polji za spreminjanje uporabniškega imena, e-naslova, uporabniške slike in gesla.
+ 
+Slika 39: Urejanje profila
+
+Ko shranimo spremembe, form skozi Route podatke pošlje v funkcijo updateProfile v UserController-ju. Funkcija je podobna funkciji store, ki ustvari novega uporabnika. Sprva preverimo, če sta obvezni polji uporabniškega imena in e-naslova zapolnjeni. Ti polji izpolni aplikacija že sama ob prihodu na to podstran, zato uporabniku ni potrebno vpisovati uporabniškega imena in e-naslova, če želi recimo zamenjati sliko. Nato preverimo, katero polje je še bilo izpolnjeno in posodobimo njuno stanje v podatkovni bazi. Če gre za geslo, ga moramo pred vnosom v tabelo še zašifrirati z razredom Laravel-ovim razredom Hash. Če gre za sliko, najprej pridobimo njen tip(png, jpg, gif) in jo nato dodamo v lokalno shrambo, v tabelo pa vnesemo pot do slike. Uporabnika na koncu obvestimo o uspešnosti oziroma neuspešnosti urejanja profila.
+ 
+5	Zaključek
+V tej seminarski nalogi sem predstavil razvoj lastnega socialnega omrežja, od načrtovanja in izbire orodij do implementacije ključnih funkcionalnosti. Aplikacijo sem zgradil z uporabo PHP-jevega ogrodja Laravel, ki se je izkazalo kot učinkovito in praktično okolje za razvoj kompleksnejše aplikacije. Z uporabo AJAX-a sem lahko aplikaciji dodal brezhibno in uporabniku neopazno interaktivnost, ki zakrije kompleksnosti delovanja v ozadju. Morda se zdi, da so si različne funkcionalnosti aplikacije v delovanju zelo podobne, preproste, a se izkaže, da se ob vsaki implementaciji soočimo z novimi izzivi.
+Skozi projekt sem pridobil praktične izkušnje z razvojem sodobnih spletnih aplikacij in poglobil razumevanje strukture ter delovanja socialnih omrežij. Projekt zame predstavlja trdno osnovo za nadaljnjo nadgrajevanje in razvijanje.
+ 
+6	Priloga
+Vsa koda uporabljena za izdelavo aplikacije je dostopna na:
+https://github.com/Anderionaw/socialno-omrezje
+Sama aplikacija je dostopna na:
+https://www.socialnoomrezje.bonifacij.si
+ 
+1	Bibliografija
+Ajax (programming). pridobljeno (15. 4 2025). Pridobljeno iz Wikipedia: https://en.wikipedia.org/wiki/Ajax_(programming)
+Anželj, G. pridobljeno (15. 4 2025). Kaj je podatkovna baza? Pridobljeno 2. 6 2024 iz Računalništvo in informatika 2: https://anzeljg.github.io/rin2/book2/2304/index1.html
+Database Relationships. pridobljeno (15. 4 2025). Pridobljeno iz IBM: https://www.ibm.com/docs/en/eamfoc/7.6.0?topic=structure-database-relationships
+Documentation. pridobljeno (15. 4 2025). Pridobljeno iz Laravel: https://laravel.com/docs/12.x
+Eloquent: Getting Started. pridobljeno (15. 4 2025). Pridobljeno iz Laravel: https://laravel.com/docs/12.x/eloquent
+Entity–relationship model. pridobljeno (15. 4 2025). Pridobljeno iz Wikipedia: https://en.wikipedia.org/wiki/Entity%E2%80%93relationship_model
+Nixon, R. (2012). Learning PHP, MySQL, JavaScript, and CSS: A Step-by-Step Guide to Creating Dynamic Websites, 2nd Edition. Sebastopol, California: O'Reilly Media, Inc.
+Schafer, S. M. (2010). HTML, XHTML, and CSS; Fifth Edition. Indianapolis, Indiana: Wiley Publishing, Inc.
+Suehring, S., Converse, T., & Joyce, P. (2009). PHP6 and MySQL Bible. Indianapolis, Indiana: Wiley Publishing, Inc.
+What is Ajax? (3. 4 2021). Pridobljeno iz IBM: https://www.ibm.com/docs/en/rational-soft-arch/9.6.1?topic=page-asynchronous-javascript-xml-ajax-overview
+What is Class Diagram? pridobljeno (15. 4 2025). Pridobljeno iz Visual Paradigm: https://www.visual-paradigm.com/guide/uml-unified-modeling-language/what-is-class-diagram/
+What is Unified Modeling Language (UML)? pridobljeno (15. 4 2025). Pridobljeno iz Visual Paradigm: https://www.visual-paradigm.com/guide/uml-unified-modeling-language/what-is-uml/
+What is Use Case Diagram? pridobljeno (15. 4 2025). Pridobljeno iz Visual Paradigm: https://www.visual-paradigm.com/guide/uml-unified-modeling-language/what-is-use-case-diagram/
+
+ 
+Izjava o avtorstvu
+Izjavljam, da je seminarska naloga v celoti moje avtorsko delo, ki sem ga izdelal/-a samostojno s pomočjo navedene literature in pod vodstvom mentorja. 
+
+15.4.2025		Filip Štremfelj
+
+
+
+
+
+
+
+
+
+

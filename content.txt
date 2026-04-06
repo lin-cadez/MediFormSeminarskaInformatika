@@ -1,0 +1,232 @@
+ 
+Splošna matura:
+Seminarska naloga pri informatiki
+IZDELAVA SPLETNE STRANI ZA NAROČNIKA
+
+Mentor: Aleš Volčini	Avtor: Lin Čadež, G 4. A
+Ljubljana, april 2026 
+Zahvala
+Zahvaljujem se mentorju Alešu Volčiniju za strokovno pomoč, usmerjanje in konstruktivne pripombe pri izdelavi seminarske naloge ter pri razvoju spletne aplikacije.
+Posebna zahvala gre Heleni Božič Janežič s Srednje zdravstvene šole Ljubljana za pripravljenost na sodelovanje, posredovanje gradiv, jasna pričakovanja ter dragocene povratne informacije, ki so pomembno prispevale k temu, da je bila aplikacija prilagojena realnim potrebam praktičnega pouka.
+Zahvaljujem se tudi dijakom, ki so aplikacijo preizkušali in s svojimi predlogi pomagali izboljšati uporabniško izkušnjo, ter družini za podporo in razumevanje v času razvoja projekta.
+
+Povzetek
+Namen seminarske naloge je predstaviti postopek izdelave spletne aplikacije za naročnika ter prikazati, kako lahko digitalne rešitve izboljšajo obstoječe delovne procese v izobraževalnem okolju. Naloga obravnava razvoj spletne aplikacije MediForm, ki je bila zasnovana za podporo dijakom zdravstvene nege pri izpolnjevanju poročil o praktičnem pouku. Raziskovalno vprašanje se glasi, kako lahko sodobne spletne tehnologije prispevajo k bolj učinkovitemu, preglednemu in sprotnemu beleženju opravljenih postopkov zdravstvene nege. V osrednjem delu je opisana analiza potreb naročnika, zasnova uporabniškega vmesnika ter tehnična izvedba aplikacije z uporabo sodobnega tehnološkega sklada. Uporabljene so bile raziskovalne in empirične metode, kot so analiza obstoječe dokumentacije, razvoj prototipa in praktično testiranje. Rezultati so pokazali, da aplikacija zmanjšuje administrativno obremenitev dijakov in omogoča sprotno shranjevanje podatkov. Zaključek ugotavlja, da je digitalizacija dokumentacije smiselna in uporabna rešitev za prakso v zdravstvenem izobraževanju.
+Ključne besede: spletna aplikacija, digitalizacija dokumentacije, zdravstvena nega, praktični pouk, izobraževanje, razvoj programske opreme
+
+Kazalo vsebine
+2.1	Digitalizacija šolskih administrativnih procesov	10
+2.2	Analiza problema in potrebe naročnika	11
+2.2.1	Obstoječi način izpolnjevanja poročil o praksi	11
+2.2.2	Potrebe naročnika in uporabnikov	12
+2.2.3	Povzetek ugotovitev analize in vpliv na zasnovo rešitve	12
+2.3	Zasnova in razvoj spletne aplikacije MediForm	13
+2.3.1	Funkcionalne zahteve aplikacije	13
+2.3.2	Izbira tehnologij	14
+2.3.3	Razvojni pristop	14
+2.4	Tehnična izvedba ključnih funkcionalnosti MediForm	15
+2.4.1	Prijava uporabnikov brez gesla (Firebase Authentication)	15
+2.4.2	Vzpostavitev seje (session cookie) in podpora za Bearer token	15
+2.4.3	Uporabniške vloge in omejevanje dostopa (RBAC)	17
+2.4.4	Samodejno shranjevanje napredka (auto-save) v Firestore	17
+2.4.5	CORS whitelist (omejevanje dovoljenih izvorov)	18
+2.4.6	Rate limiting (omejevanje števila zahtevkov)	18
+2.4.7	Firebase Security Rules (omejevanje dostopa do podatkov)	19
+2.4.8	Upravljanje okoljskih spremenljivk	21
+2.5	Arhitektura spletne aplikacije MediForm	21
+2.5.1	Odjemalski del (frontend)	21
+2.5.2	Strežniški del (backend)	22
+2.5.3	Baza podatkov in avtentikacija	22
+2.5.4	Prednosti izbrane arhitekture	23
+2.6	Pregled nad strukturo in funkcijami uporabniškega vmesnika	23
+2.6.1	Struktura uporabniškega vmesnika	23
+2.6.2	Vnosna polja in uporabniška interakcija	24
+2.7	Podnaslov 3	27
+
+Kazalo slik
+Slika 1: Posnetek zaslona spletne strani MediForm	9
+Slika 2:Primer pridobitve ID tokena in začetek seje na backendu	15
+Slika 3: Primer (backend, Express.js): ustvarjanje seje	16
+Slika 4: Primer: auth middleware (Bearer → cookie fallback)	16
+Slika 5: Primer: middleware za vloge	17
+Slika 6: Primer (backend): saveProgress	18
+Slika 7: Varnostna pravila v Firebase	20
+Slika 8: Izsek iz dokumenta, ki ga je naročnik priložil	24
+Slika 9: Primer polja, kjer lahko izberemo eno izmed ponujenih možnosti ali pa napišemo svojo v besedilno polje	24
+Slika 10:Primer polja, kjer lahko izberemo več ponujenih možnosti ali pa napišemo svojo v besedilno polje	25
+Slika 11: Primer polji različnih tipov	25
+Slika 12: Primer tabele na MediForm	26
+Slika 13: Citatno orodje v MS Wordu	27
+Slika 14: Ustvari vir	27
+Slika 15: Vstavi napis	28
+Slika 16: Pozitivna logika delovanja vezja TTL (Dobnikar, 2009, str. 25)	28
+
+
+ 
+1	Uvod 
+ V sodobnem času se šole in izobraževalne ustanove vse pogosteje srečujejo s potrebo po digitalizaciji administrativnih in pedagoških procesov. Med te procese sodi tudi vodenje in oddajanje poročil o praktičnem pouku, ki je pri zdravstvenih šolah bistven del izobraževanja. Klasično ročno ali pol-digitalno izpolnjevanje poročil pogosto zahteva veliko časa, hkrati pa povečuje možnost napak, površno izpolnjenih vsebin in zamud pri oddaji.
+Za seminarsko nalogo sem se odločil na podlagi konkretnega problema, s katerim se je soočala Srednja zdravstvena šola Ljubljana. Dijaki so poročila o praktičnem pouku v bolnišnicah pogosto izpolnili tik pred rokom za oddajo, brez sprotnega beleženja opravljenih aktivnosti. Tak način dela ni omogočal kakovostnega pregleda nad opravljenim delom in ni spodbujal doslednega strokovnega zapisovanja zdravstvene nege. Zato sem se odločil razviti spletno rešitev, ki bi ta proces poenostavila in izboljšala njegovo kakovost.
+Namen seminarske naloge je izdelava spletne aplikacije za naročnika, ki omogoča enostavno, sprotno in strukturirano izpolnjevanje poročila o zdravstveni negi pacienta med praktičnim poukom. Sistem dijakom omogoča, da večino podatkov vnesejo z izbiro ponujenih možnosti, pri čemer se delo samodejno shranjuje v oblak. Na ta način ni več potrebno ročno pisanje daljših opisov, hkrati pa so zapisi bolj poenoteni in strokovno ustrezni. Končno poročilo lahko uporabnik izdela tudi v obliki PDF-dokumenta.
+Cilji seminarske naloge so:
+•	analizirati potrebe naročnika glede vodenja poročil o praktičnem pouku,
+•	načrtovati strukturo spletne aplikacije za poročanje o zdravstveni negi pacienta,
+•	razviti uporabniku prijazen spletni vmesnik z vnaprej pripravljenimi možnostmi vnosa,
+•	zagotoviti sprotno shranjevanje podatkov v oblak in možnost izvoza poročila v PDF,
+•	preizkusiti delovanje aplikacije z vidika uporabnosti in zanesljivosti.
+Hipoteza seminarske naloge je, da lahko s pomočjo dobro zasnovane spletne aplikacije bistveno izboljšamo kakovost, preglednost in pravočasnost oddaje poročil o praktičnem pouku, hkrati pa razbremenimo dijake ročnega zapisovanja ponavljajočih se vsebin.
+Raziskovalne metode so temeljile na analizi obstoječega načina izpolnjevanja poročil, načrtovanju uporabniškega vmesnika, razvoju spletne aplikacije ter praktičnem testiranju delovanja sistema z vidika uporabniške izkušnje in funkcionalnosti.
+2	Jedro
+2.1	Digitalizacija šolskih administrativnih procesov
+Digitalna transformacija v izobraževanju predstavlja sistematično uvajanje digitalnih tehnologij v učne, organizacijske in administrativne procese izobraževalnih ustanov. Ne nanaša se zgolj na uporabo računalnikov in interneta pri pouku, temveč vključuje celovito spremembo načina dela, komunikacije, spremljanja znanja ter obdelave podatkov Glavni cilj digitalne transformacije je povečati učinkovitost izobraževalnega procesa, izboljšati dostopnost informacij ter prilagoditi učenje potrebam sodobne družbe. (Kampylis, 2015)
+V zadnjih letih je digitalizacija postala eden ključnih razvojnih usmeritev šolskih sistemov v Evropi in svetu. Evropska komisija poudarja, da digitalna orodja omogočajo bolj individualiziran pristop k učenju, lažje spremljanje napredka učencev ter učinkovitejše upravljanje pedagoške dokumentacije (European Commission, 2020). Poseben pomen ima digitalizacija v strokovnem in poklicnem izobraževanju, kjer je potrebno povezovati teoretično znanje s praktičnimi izkušnjami.
+Poleg poučevanja se digitalna transformacija vse bolj uveljavlja tudi na področju administracije in dokumentiranja. Tradicionalni papirni obrazci, ročno izpolnjevanje poročil in shranjevanje dokumentacije v fizični obliki predstavljajo zamudne in napakam podvržene postopke. Raziskave kažejo, da digitalni obrazci zmanjšujejo število napak pri vnosu podatkov, pohitrijo obdelavo ter omogočajo boljšo sledljivost in preglednost podatkov. (Selwyn, 2016)
+Pomemben vidik digitalne transformacije je tudi spodbujanje sprotnega dela in odgovornosti uporabnikov. Digitalni sistemi omogočajo shranjevanje podatkov v realnem času, kar uporabnike spodbuja k rednemu in vestnemu vnašanju informacij, namesto da bi delo opravili tik pred rokom za oddajo. Takšen pristop prispeva k večji kakovosti zbranih podatkov in bolj realnemu prikazu opravljenega dela (Redecker, 2017).
+Kljub številnim prednostim digitalna transformacija prinaša tudi izzive, kot so varovanje osebnih podatkov, zagotavljanje informacijske varnosti ter usposabljanje uporabnikov za delo z novimi tehnologijami. Zato mora biti uvajanje digitalnih rešitev premišljeno, postopno in prilagojeno dejanskim potrebam uporabnikov, pri čemer je ključno sodelovanje med razvijalci, učitelji in institucijami (OECD, 2019)
+Digitalna transformacija v izobraževanju tako predstavlja temelj za razvoj sodobnih rešitev, kot je spletna aplikacija za vodenje poročil o praktičnem pouku. Takšne rešitve združujejo tehnološki napredek z realnimi potrebami šolskega okolja ter omogočajo učinkovitejše, preglednejše in kakovostnejše delo vseh vključenih deležnikov.
+2.2	Analiza problema in potrebe naročnika
+2.2.1	Obstoječi način izpolnjevanja poročil o praksi
+V okviru praktičnega pouka zdravstvene nege dijaki Srednje zdravstvene šole Ljubljana redno izpolnjujejo poročila o zdravstveni negi pacienta. Ta poročila služijo kot dokazilo o opravljenih postopkih, pridobljenih kompetencah ter kot podlaga za vrednotenje praktičnega usposabljanja. V praksi se je izkazalo, da so ta poročila pogosto narejena površno in v naglici tik pred rokom oddaje. Tak način dela vpliva na kakovost vsebine, saj so zapisi pogosto površni, nepopolni ali netočni. Poleg tega ročno izpolnjevanje ne omogoča sprotnega shranjevanja, kar pomeni večje tveganje za izgubo podatkov in nedoslednost med posameznimi poročili.
+Podobne težave navaja tudi literatura, ki opozarja, da pomanjkanje digitalnih podpornih sistemov v izobraževalnih ustanovah vodi v neučinkovite administrativne procese ter zmanjšuje motivacijo študentov za kakovostno dokumentiranje svojega dela (Kampylis et al., 2015).
+2.2.2	Potrebe naročnika in uporabnikov
+Postopek analize potreb naročnika sem izvedel na podlagi neposredne komunikacije z mentorico praktičnega pouka v kliničnem okolju. V prvem stiku mi je predstavila obstoječi način dela, pri katerem dijaki zdravstvene nege pri praktičnem pouku izpolnjujejo obsežno papirno dokumentacijo. Izpostavila je, da je to delo za dijake zamudno in pogosto nepregledno, poleg tega pa se poročila velikokrat izpolnijo šele tik pred rokom oddaje.
+V nadaljevanju mi je naročnica posredovala obrazce, ki jih dijaki trenutno izpolnjujejo v kliničnem okolju. Obrazce sem pregledal in analiziral njihovo strukturo, vsebino ter ponavljajoče se podatke. Ugotovil sem, da so številni zapisi vsebinsko podobni in da bi jih bilo smiselno preoblikovati v vnaprej pripravljene možnosti izbire. To bi dijakom omogočilo hitrejše in enostavnejše izpolnjevanje poročila ter zmanjšalo možnost napak ali izpuščenih podatkov.
+Med analizo sem naročnico tudi dodatno povprašal o tem, ali se podatki v poročilih pogosto spreminjajo, ali gre večinoma za ponavljajoče se postopke ter ali dokumentacija vključuje osebne podatke pacienta ali dijaka. Na podlagi odgovorov sem ugotovil, da se večina postopkov ponavlja in da osebni podatki za namen poročila niso bistveni. To mi je omogočilo, da sem zasnovo aplikacije prilagodil tako, da temelji na vsebinskih podatkih in je primerna z vidika varovanja zasebnosti.
+Na podlagi pridobljenih informacij sem se odločil, da bo aplikacija delovala kot pregledna digitalna kontrolna lista. Dijaki bodo lahko z označevanjem in izbiranjem posameznih postopkov sproti beležili, kaj so pri pacientu opravili, brez potrebe po obsežnem ročnem pisanju besedila.
+2.2.3	Povzetek ugotovitev analize in vpliv na zasnovo rešitve
+Na podlagi izvedene analize potreb sem oblikoval več ključnih ugotovitev, ki so neposredno vplivale na zasnovo spletne aplikacije. Prva ugotovitev je bila, da mora biti vnos podatkov čim hitrejši in enostaven, saj dijaki praktični pouk opravljajo v zahtevnem in časovno omejenem okolju.
+Druga pomembna ugotovitev je bila potreba po sprotnem shranjevanju podatkov. V obstoječem načinu dela se je pogosto dogajalo, da so dijaki poročila izpolnjevali z zamikom, kar je vplivalo na kakovost in natančnost zapisa. Z uporabo spletne aplikacije, ki samodejno shranjuje podatke v oblak, je omogočeno stalno beleženje opravljenih aktivnosti.
+Ugotovil sem tudi, da aplikacija pri osnovnem vnosu podatkov o zdravstveni negi pacienta ne potrebuje zbiranja občutljivih osebnih podatkov pacienta, temveč predvsem podatke o izvedenih postopkih zdravstvene nege. To mi je v začetni fazi omogočilo zasnovo sistema, ki je enostaven, anonimiziran in primeren za uporabo v izobraževalnem okolju, saj se osredotoča izključno na vsebinski del poročila in ne na identiteto pacienta.
+Vse ugotovitve analize potreb so predstavljale izhodišče za nadaljnjo fazo razvoja, v kateri sem aplikacijo zasnoval modularno, z možnostjo kasnejše razširitve na dodatne življenjske aktivnosti glede na potrebe naročnika in povratne informacije uporabnikov.
+2.3	Zasnova in razvoj spletne aplikacije MediForm
+Na podlagi predhodno izvedene analize potreb sem začel z zasnovo in razvojem spletne aplikacije MediForm. Pri tem sem izhajal iz praktičnega vidika uporabe aplikacije v kliničnem okolju ter iz dejstva, da so končni uporabniki dijaki zdravstvene nege. Glavni cilj zasnove je bil razviti aplikacijo, ki omogoča hitro, pregledno in zanesljivo beleženje postopkov zdravstvene nege med praktičnim poukom.
+Razvoj aplikacije sem načrtoval postopoma in modularno, kar pomeni, da je možno posamezne funkcionalnosti dodajati ali nadgrajevati brez večjih posegov v obstoječi sistem. Takšen pristop se je izkazal za primernega, saj se je že med razvojem pojavila potreba po razširitvi aplikacije na dodatne življenjske aktivnosti zdravstvene nege.
+2.3.1	Funkcionalne zahteve aplikacije
+Aplikacija je zasnovana kot spletni obrazec, ki dijaku omogoča, da podatke vnaša sproti in na strukturiran način. Namesto prostega besedilnega vnosa sem večino vsebine zasnoval v obliki izbirnih možnosti, potrditvenih polj in večkratnih izbir. S tem sem zmanjšal možnost napak, pohitril izpolnjevanje in poenotil strukturo poročil.
+Vsak vsebinski sklop je razdeljen na posamezne podkategorije, znotraj katerih so jasno opredeljena vprašanja oziroma elementi. Aplikacija uporabniku omogoča pregled nad izpolnjenostjo posameznih delov poročila, kar mu pomaga pri organizaciji dela in zmanjšuje možnost, da bi kakšen del izpustil.
+Pomemben del funkcionalne zasnove je tudi samodejno shranjevanje podatkov. Aplikacija ob vsaki spremembi shrani trenutno stanje obrazca, kar uporabniku omogoča, da poročilo izpolnjuje postopoma in brez strahu pred izgubo podatkov.
+2.3.2	Izbira tehnologij
+Pri razvoju spletne aplikacije MediForm sem uporabil sodobne spletne tehnologije, ki omogočajo zanesljivo delovanje, dobro uporabniško izkušnjo in možnost nadaljnjega razvoja.
+Sprednji del aplikacije je razvit z uporabo React in TypeScript, kar omogoča razvoj preglednega in odzivnega uporabniškega vmesnika ter zmanjšuje možnost napak zaradi statičnega preverjanja tipov. Za oblikovanje vmesnika sem uporabil Tailwind CSS, ki omogoča hitro prilagajanje izgleda in dosleden vizualni slog.
+Za zaledni del aplikacije sem uporabil Node.js z ogrodjem Express.js, ki skrbi za obdelavo zahtevkov, komunikacijo z oblačnimi storitvami ter nadzor dostopa do podatkov. Takšna rešitev omogoča jasno ločitev med uporabniškim vmesnikom in logiko aplikacije.
+Za avtentikacijo uporabnikov sem uporabil Firebase Authentication, ki omogoča prijavo preko elektronske pošte z enkratno prijavno povezavo. Za shranjevanje podatkov o poročilih in uporabnikih pa sem uporabil Firebase Firestore, ki je oblačna dokumentna podatkovna baza in omogoča sprotno shranjevanje ter dostop do podatkov z različnih naprav.
+Uporaba oblačnih storitev mi je omogočila, da aplikacija deluje brez potrebe po lastni infrastrukturi in je primerna za uporabo v izobraževalnem okolju.
+2.3.3	Razvojni pristop
+Razvoj aplikacije je potekal iterativno, kar pomeni, da sem aplikacijo večkrat preizkušal, nadgrajeval in prilagajal na podlagi povratnih informacij naročnika. Po vsaki večji spremembi sem preveril delovanje aplikacije v realnem kontekstu uporabe, kar mi je omogočilo sprotno odpravljanje pomanjkljivosti.
+Takšen pristop je omogočil, da se je aplikacija postopoma razvijala iz osnovne ideje v funkcionalen sistem, ki dejansko odgovarja potrebam uporabnikov. Poseben poudarek sem namenil stabilnosti delovanja, preglednosti kode in možnosti nadaljnje razširitve aplikacije.
+Za razvoj prve verzije aplikacije sem porabil 50 ur dela, ki je vključevalo programiranje, konfiguracija DNS strežnikov, oblikovanje uporabniškega vmesnika in testiranje ter priprava razvojnega okolja.
+2.4	Tehnična izvedba ključnih funkcionalnosti MediForm
+V tem poglavju opišem tehnično izvedbo ključnih funkcionalnosti aplikacije MediForm. Pri razvoju sem moral rešiti več tipičnih problemov spletnih aplikacij: varno prijavo uporabnikov, omejevanje dostopa glede na vloge, shranjevanje napredka (auto-save), omogočanje delovanja v različnih okoljih (lokalno/produkcija) ter varno komunikacijo med frontend in backend delom. Pri vsaki rešitvi navajam konkretne primere implementacije in pojasnim, zakaj sem se odločil za izbrani pristop.
+2.4.1	Prijava uporabnikov brez gesla (Firebase Authentication)
+Za prijavo uporabnikov sem uporabil Firebase Authentication, in sicer možnost Email Link Authentication (prijava z enkratno povezavo). Ta pristop je primeren za šolsko okolje, ker uporabnikom ni treba ustvarjati in si zapomniti gesel, hkrati pa je prijava še vedno varna.
+Postopek prijave poteka tako, da uporabnik vpiše email, Firebase mu pošlje prijavno povezavo, po kliku pa frontend pridobi Firebase ID token, ki se uporabi za avtentikacijo pri backendu.
+ 
+Slika 2:Primer pridobitve ID tokena in začetek seje na backendu
+Ta korak je pomemben, ker Firebase ID token sam po sebi ni namenjen dolgotrajni seji. Zato sem na backendu iz njega ustvaril “daljšo sejo”.
+2.4.2	Vzpostavitev seje (session cookie) in podpora za Bearer token
+Za stabilno delovanje prijave sem implementiral dva načina avtentikacije:
+1.	session cookie (HTTP-only cookie), ki je varen pred dostopom iz JavaScripta in zmanjšuje tveganje XSS,
+2.	Bearer token, ki sem ga dodal kot podporo v primerih, kjer cross-origin piškotki ne delujejo idealno (različne domene, proxy, testna okolja).
+Na backendu sem iz Firebase ID tokena ustvaril Firebase session cookie (veljavnost 7 dni). Cookie je nastavljen kot httpOnly, v produkciji pa tudi secure in sameSite: none, da deluje med domenami.
+	 
+Slika 3: Primer (backend, Express.js): ustvarjanje seje
+Za zaščitene API klice sem implementiral middleware, ki najprej preveri Authorization header (Bearer token), nato pa session cookie.
+ 
+Slika 4: Primer: auth middleware (Bearer → cookie fallback)
+S tem sem dosegel, da aplikacija deluje stabilno tudi pri različnih kombinacijah domen in razvojnih okolij. 
+2.4.3	Uporabniške vloge in omejevanje dostopa (RBAC)
+Ker aplikacija vsebuje funkcije, ki so namenjene le skrbniku (npr. upravljanje uporabnikov ali urejanje obrazcev), sem implementiral osnovni sistem vlog (RBAC – Role Based Access Control). Vloga uporabnika je shranjena v Firebase Firestore, backend pa jo pri vsakem zahtevku preveri. Implementiral sem funkcijo requireRole, ki dovoli dostop le izbranim vlogam (npr. admin).
+ 
+Slika 5: Primer: middleware za vloge
+S tem sem lahko zaščitil posamezne rute, na primer: seznam vseh uporabnikov je dostopen le administratorju.
+
+2.4.4	Samodejno shranjevanje napredka (auto-save) v Firestore
+Ena najpomembnejših funkcionalnosti MediForm je možnost, da dijak poročilo izpolnjuje postopoma. Zato sem implementiral auto-save, ki shranjuje napredek v Firestore. Sistem je zasnovan tako, da ima uporabnik za vsak obrazec eno “oddajo”, ki se posodablja z merge: true, kar prepreči prepisovanje celotnega dokumenta.
+ 
+Slika 6: Primer (backend): saveProgress
+Na frontend strani sem uporabil “debounce” (1 sekunda), da se ne sproži shranjevanje ob vsakem pritisku tipke, ampak šele po kratkem premoru. S tem se izognemo prevelikemu številu zahtev na strežnik.
+2.4.5	CORS whitelist (omejevanje dovoljenih izvorov)
+Ker frontend in backend aplikacije MediForm ne delujeta nujno na isti domeni, je bilo potrebno pravilno konfigurirati CORS (Cross-Origin Resource Sharing). Namesto da bi dovolil dostop iz vseh izvorov, sem implementiral whitelist dovoljenih domen, ki jim backend dovoli pošiljanje zahtevkov.
+Seznam dovoljenih izvorov je definiran v okoljski spremenljivki FRONTEND_URLS, kar omogoča ločeno nastavitev za lokalno razvojno okolje in produkcijo. S tem pristopom sem zagotovil, da se API odziva zgolj na zahteve, ki prihajajo z vnaprej določenih spletnih mest. V strežniški kodi se ob vsakem zahtevku preveri, ali se izvor (origin) nahaja na seznamu dovoljenih domen. Zahtevki brez izvora (npr. strežnik-strežnik ali Postman) so dovoljeni, vse ostale pa sistem zavrne.
+Takšna nastavitev zmanjša tveganje, da bi zlonamerne spletne strani pošiljale zahtevke v imenu uporabnika.
+2.4.6	Rate limiting (omejevanje števila zahtevkov)
+Poleg omejevanja izvora zahtevkov sem implementiral tudi rate limiting, ki omejuje število zahtevkov z istega IP-naslova v določenem časovnem intervalu. Za to sem uporabil knjižnico express-rate-limit. 
+Splošni limiter omeji število vseh zahtevkov na API, strožji limiter pa je uporabljen posebej za prijavne (avtentikacijske) končne točke. Na ta način sistem preprečuje poskuse množičnih prijav ali druge oblike zlorab, kot so napadi z ugibanjem prijavnih povezav.
+Rate limiting deluje tudi v produkcijskem okolju za proxy strežniki (npr. Vercel), saj aplikacija zaupa posredovanemu IP-naslovu s pomočjo nastavitve trust proxy.
+Ta mehanizem pomembno prispeva k stabilnosti in varnosti strežnika ter zmanjšuje možnost preobremenitve sistema.
+2.4.7	Firebase Security Rules (omejevanje dostopa do podatkov)
+Poleg varnostnih mehanizmov na nivoju strežnika sem moral zagotoviti tudi ustrezno zaščito podatkov neposredno v Firebase Firestore. Zato sem konfiguriral Firebase Security Rules, ki določajo, kdo lahko bere ali piše posamezne dokumente v podatkovni bazi.
+Pri zasnovi pravil sem sledil načelu najmanjših pravic (principle of least privilege), kar pomeni, da ima uporabnik dostop le do tistih podatkov, ki jih nujno potrebuje za delovanje aplikacije. Vsi zapisi in spremembe podatkov so dovoljeni izključno preko strežniškega dela aplikacije, kjer uporabljam Firebase Admin SDK.
+Uporabniški podatki so shranjeni v zbirki users. Vsak prijavljen uporabnik lahko bere le svoje lastne podatke, kar se preveri s primerjavo identifikatorja uporabnika (request.auth.uid). Pisanje v to zbirko iz frontend strani ni dovoljeno, saj vse spremembe izvaja backend ob prijavi uporabnika ali pri upravljanju vlog.
+ 
+Slika 7: Varnostna pravila v Firebase
+Takšna nastavitev preprečuje nepooblaščeno spreminjanje uporabniških podatkov in zagotavlja centraliziran nadzor nad uporabniškimi vlogami.
+Podatki o obrazcih, ki predstavljajo strukturo poročila, so shranjeni v zbirki static. Ti podatki so javno berljivi, saj jih aplikacija potrebuje za prikaz vprašanj v uporabniškem vmesniku. Pisanje v to zbirko ni dovoljeno iz frontend strani, temveč se izvaja zgolj preko strežnika.
+Oddaje poročil so shranjene v zbirki submissions. Uporabnik lahko bere le tiste oddaje, ki so povezane z njegovim uporabniškim računom. Tako se zagotovi, da dijak nima dostopa do poročil drugih uporabnikov.
+Za vse ostale dokumente in zbirke sem vzpostavil pravilo, ki privzeto prepove vsakršno branje ali pisanje. S tem se izognem nenamernemu izpostavljanju podatkov, tudi v primeru, da bi se v bazo dodale nove zbirke.
+
+2.4.8	Upravljanje okoljskih spremenljivk
+Pri razvoju spletne aplikacije MediForm sem upošteval razliko med razvojnim in produkcijskim okoljem. Za prilagajanje delovanja aplikacije glede na okolje sem uporabil okoljske spremenljivke (environment variables), kar omogoča spremembe nastavitev brez poseganja v izvorno kodo.
+V lokalnem okolju aplikacija uporablja naslove localhost, v produkcijskem okolju pa dejansko domeno. Seznam dovoljenih frontend domen se določa z okoljsko spremenljivko FRONTEND_URLS, ki se uporablja pri CORS preverjanju.
+Posebna pozornost je bila namenjena tudi varnosti Firebase poverilnic. V lokalnem razvoju se uporablja servisna datoteka, določena z okoljsko spremenljivko GOOGLE_APPLICATION_CREDENTIALS, medtem ko so v produkciji podatki servisnega računa shranjeni v okoljski spremenljivki FIREBASE_SERVICE_ACCOUNT. Tako občutljivi podatki niso nikoli neposredno zapisani v kodi.
+Uporaba okoljskih spremenljivk omogoča varno ločevanje okolij, večjo zaščito dostopnih ključev ter stabilno delovanje aplikacije v različnih fazah razvoja in uporabe.
+
+2.5	Arhitektura spletne aplikacije MediForm
+Pri zasnovi spletne aplikacije MediForm sem uporabil odjemalec–strežnik (client–server) arhitekturo, ki je značilna za sodobne spletne aplikacije. Aplikacija je razdeljena na dva jasno ločena dela: frontend (odjemalski del) in backend (strežniški del), komunikacija med njima pa poteka prek REST API vmesnika.
+Takšna arhitektura omogoča boljšo preglednost kode, lažje vzdrževanje sistema ter večjo varnost, saj neposreden dostop do baze podatkov s strani uporabnika ni mogoč.
+2.5.1	Odjemalski del (frontend)
+Frontend del aplikacije je izdelan kot Single Page Application (SPA) z uporabo knjižnice React in programskega jezika TypeScript. Ta pristop omogoča dinamično osveževanje vsebine brez ponovnega nalaganja celotne strani, kar izboljša uporabniško izkušnjo.
+Odjemalski del skrbi za:
+•	prikaz obrazcev zdravstvene nege,
+•	zajem uporabniških vnosov,
+•	sprotno obveščanje uporabnika o shranjevanju podatkov,
+•	generiranje in prenos PDF poročil,
+•	komunikacijo z backend strežnikom prek HTTP zahtevkov.
+Vse zahteve do strežnika potekajo prek vnaprej definiranih API poti, pri čemer frontend nima neposrednega dostopa do Firebase baze ali administrativnih funkcij.
+2.5.2	Strežniški del (backend)
+Backend je razvit z uporabo Node.js in ogrodja Express.js ter deluje kot osrednja logična plast sistema. Njegova naloga je obdelava zahtevkov odjemalca, preverjanje avtentikacije, upravljanje uporabnikov ter komunikacija z bazo podatkov.
+Strežniški del:
+•	preverja avtentikacijo uporabnikov z uporabo Firebase Authentication,
+•	izvaja avtorizacijo glede na uporabniške vloge (uporabnik, skrbnik),
+•	izvaja shranjevanje in branje podatkov iz Firebase Firestore,
+•	skrbi za varnostne mehanizme (CORS, rate limiting),
+•	omogoča samodejno shranjevanje napredka (auto-save).
+Za dostop do Firebase storitev backend uporablja Firebase Admin SDK, kar omogoča popoln nadzor nad podatki in hkrati preprečuje zlorabe z odjemalske strani.
+2.5.3	Baza podatkov in avtentikacija
+Kot podatkovno bazo sem uporabil Firebase Firestore, ki je dokumentno orientirana NoSQL baza. Ta omogoča prilagodljivo shranjevanje strukturiranih podatkov, kot so obrazci, uporabniški profili in začasne oddaje.
+Avtentikacija uporabnikov poteka preko Firebase Authentication z metodo prijave preko e-poštne povezave (Email Link), kar pomeni, da uporabniki za prijavo ne potrebujejo gesla. Ta pristop zmanjša možnost napak pri prijavi in izboljša uporabniško izkušnjo.
+
+Frontend komunicira z Firebase Authentication, backend pa preverja veljavnost žetonov in skrbi za dodeljevanje vlog ter pravic dostopa.
+2.5.4	Prednosti izbrane arhitekture
+Izbrana arhitektura prinaša več pomembnih prednosti:
+•	jasna ločitev odgovornosti med frontendom in backendom,
+•	večja varnost, saj občutljivi podatki niso dostopni z odjemalske strani,
+•	možnost enostavnega razširjanja aplikacije v prihodnosti,
+•	dobra prilagodljivost za uporabo v izobraževalnem okolju z večjim številom uporabnikov.
+Arhitektura je bila zasnovana z mislijo na praktično uporabo v šolskem okolju ter kasnejše nadgrajevanje funkcionalnosti.
+2.6	Pregled nad strukturo in funkcijami uporabniškega vmesnika
+Frontend je razvit z uporabo knjižnice React v kombinaciji s programskim jezikom TypeScript, kar omogoča boljšo berljivost kode, manj napak pri razvoju ter lažje dolgoročno vzdrževanje. Za upravljanje projekta in lokalni razvoj sem uporabil razvojno okolje Vite, ki omogoča hitro zaganjanje in odzivno delo med razvojem.
+Uporabniški vmesnik je oblikovan s pomočjo Tailwind CSS, ki omogoča enotno oblikovanje komponent in hitro prilagajanje postavitve za različne velikosti zaslonov. Takšen pristop se je izkazal za primernega pri izdelavi večjega števila podobnih vnosnih polj in tabel.
+2.6.1	Struktura uporabniškega vmesnika
+Frontend je razdeljen na več logičnih komponent, ki predstavljajo posamezne dele obrazca zdravstvene nege. Vsaka komponenta je odgovorna za prikaz določenega sklopa podatkov, kar omogoča modularnost in ponovno uporabo kode.
+Posebno pozornost sem namenil:
+•	pregledni hierarhični strukturi kategorij in podkategorij,
+•	jasnemu označevanju izpolnjenih in neizpolnjenih delov obrazca,
+•	postopnemu vnosu podatkov brez občutka preobremenjenosti uporabnika.
+Takšna struktura je bila izbrana na podlagi analize obstoječe papirne dokumentacije, ki sem jo postopoma pretvoril v digitalno obliko.
+ 
+Slika 8: Izsek iz dokumenta, ki ga je naročnik priložil
+2.6.2	Vnosna polja in uporabniška interakcija
+Pri zasnovi vnosnih polj sem uporabil različne tipe komponent, kot so:
+•	enojni izbirniki (single select),  
+Slika 9: Primer polja, kjer lahko izberemo eno izmed ponujenih možnosti ali pa napišemo svojo v besedilno polje
+•	večkratni izbirniki (multi select),
+ 
+Slika 10:Primer polja, kjer lahko izberemo več ponujenih možnosti ali pa napišemo svojo v besedilno polje
+•	številčna in besedilna polja ter polja za datum,
+ 
+Slika 11: Primer polji različnih tipov
+•	tabele za kompleksnejše vnose.
+ 
+Slika 12: Primer tabele na MediForm
+Veliko vnosnih polj ima vnaprej ponujene odgovore, kar zmanjšuje možnost napak in pohitri izpolnjevanje obrazcev. Uporabnik lahko večino podatkov vnese z enim klikom, brez ročnega tipkanja daljših besedil.
+Zaradi omejitev postavitve in prekrivanja elementov v brskalniku sem za nekatere izbirne menije uporabil React Portal, ki omogoča pravilno prikazovanje pojavnih seznamov ne glede na strukturo strani.
