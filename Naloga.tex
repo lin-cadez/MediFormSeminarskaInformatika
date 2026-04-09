@@ -1,33 +1,52 @@
 \documentclass[12pt,a4paper]{article}
 \usepackage{geometry}
-\geometry{margin=2.5cm}
+\geometry{left=3cm,right=2.5cm,top=2.5cm,bottom=2.5cm}
 \usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
 \usepackage[slovene]{babel}
 \usepackage{graphicx}
-\usepackage{hyperref}
+\usepackage[unicode,hidelinks,pdftex]{hyperref}
 \usepackage{listings}
 \usepackage{xcolor}
 \usepackage{setspace}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
 \usepackage{enumitem}
+\usepackage{tocloft}
+\usepackage{etoolbox}
+\usepackage{caption}
+% Odstrani "Listing" iz napisa pod kodo, vendar pri slikah ohrani
+\captionsetup[lstlisting]{labelformat=empty}
+
+\graphicspath{{slike/}}
+
+\lstdefinelanguage{JavaScript}{
+  keywords={const,let,var,function,return,if,else,for,while,break,continue,new,try,catch,finally,throw,async,await,import,from,export,default,class,extends,this,true,false,null,undefined},
+  sensitive=true,
+  morecomment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  morestring=[b]",
+  morestring=[b]',
+}
 
 \lstset{
-    basicstyle=\ttfamily\small,
-    keywordstyle=\color{blue},
-    commentstyle=\color{gray},
-    stringstyle=\color{red},
+    basicstyle=\ttfamily\footnotesize,
+    keywordstyle=\color{blue}\bfseries,
+    commentstyle=\color{gray}\itshape,
+    stringstyle=\color{red!70!black},
     breaklines=true,
     showstringspaces=false,
     frame=single,
     captionpos=b,
-    belowcaptionskip=10pt
+    belowcaptionskip=8pt,
+    abovecaptionskip=4pt,
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    numbersep=5pt,
+    tabsize=2,
 }
 
 \onehalfspacing
-\pagestyle{fancy}
-\fancyhf{}
-\fancyfoot[C]{\thepage}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0.8em}
 
@@ -35,34 +54,57 @@
 \titleformat{\subsection}{\normalfont\large\bfseries}{\thesection.\arabic{subsection}}{1em}{}
 \titleformat{\subsubsection}{\normalfont\normalsize\bfseries}{\thesubsection.\arabic{subsubsection}}{1em}{}
 
+\newcommand{\romanpages}{%
+  \setcounter{page}{1}%
+  \pagenumbering{Roman}%
+  \pagestyle{fancy}%
+  \fancyhf{}%
+  \fancyfoot[C]{\thepage}%
+}
+\newcommand{\arabicpages}{%
+  \pagenumbering{arabic}%
+  \setcounter{page}{1}%
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+\renewcommand{\listfigurename}{Kazalo slik}
+
 \begin{document}
 
-% Naslovna stran
+% NASLOVNA STRAN
 \begin{titlepage}
     \thispagestyle{empty}
     \begin{center}
-        \includegraphics[width=5cm]{slike/logotip_vegova_leze_brezokvirja.png}
+        \IfFileExists{slike/logotip_vegova_leze_brezokvirja.png}{%
+          \includegraphics[width=7cm]{slike/logotip_vegova_leze_brezokvirja.png}
+        }{%
+          \fbox{\begin{minipage}{7cm}\centering\vspace{1cm}Logotip \v{S}ole\vspace{1cm}\end{minipage}}
+        }
 
         \vspace{2cm}
 
-        {\Large \textbf{Splošna matura:}}
+        {\Large \textbf{Splo\v{s}na matura}}
 
         \vspace{0.3cm}
 
-        {\Large \textbf{Seminarska naloga pri računalništvu}}
+        {\Large \textbf{Seminarska naloga pri informatiki}}
 
         \vspace{1.5cm}
 
-        {\Huge \textbf{SPLETNA APLIKACIJA MEDIFORM ZA DIGITALNO POROČANJE O ZDRAVSTVENI NEGI}}
+        {\Huge \textbf{Izdelava spletne strani za naro\v{c}nika}}
 
-        \vspace{1.5cm}
+        \vspace{0.5cm}
 
-        {\large \textbf{Strokovno poročilo}}
+        {\large \textit{Spletna aplikacija MediForm za enostavno izdelavo poro\v{c}il o opravljeni zdravstveni negi}}
 
         \vfill
 
         \begin{flushleft}
-        Mentor: mag. Aleš Volčini, prof. \hfill Avtor: Lin Čadež, G 4. A
+        Mentor: Ale\v{s} Vol\v{c}ini, prof. \hfill Avtor: Lin \v{C}ade\v{z}, G 4. A
         \end{flushleft}
 
         \vspace{0.5cm}
@@ -71,394 +113,569 @@
     \end{center}
 \end{titlepage}
 
+% ZAHVALA
+\newpage
+\thispagestyle{empty}
+
 \section*{Zahvala}
 
-Zahvaljujem se mentorju Alešu Volčiniju za pomoč, usmerjanje in koristne pripombe pri izdelavi seminarske naloge ter pri razvoju aplikacije MediForm.
+Zahvaljujem se mentorju Ale\v{s}u Vol\v{c}iniju za pomo\v{c}, usmerjanje in koristne pripombe pri izdelavi seminarske naloge ter pri razvoju aplikacije MediForm.
 
-Posebej se zahvaljujem Heleni Božič Janežič s Srednje zdravstvene šole Ljubljana za sodelovanje, pojasnila o obstoječem načinu dela, posredovana gradiva in sprotne povratne informacije. Zahvaljujem se tudi dijakom, ki so aplikacijo preizkusili in s svojimi predlogi pomagali izboljšati uporabniško izkušnjo.
+Posebej se zahvaljujem Heleni Bo\v{z}i\v{c} Jane\v{z}i\v{c} s Srednje zdravstvene \v{s}ole Ljubljana za naro\v{c}ilo spletne aplikacije MediForm, za vsa njena pojasnila o obstoje\v{c}em na\v{c}inu dela, posredovana gradiva in sprotne povratne informacije. Zahvaljujem se tudi dijakom, ki so aplikacijo preizkusili in s svojimi predlogi pomagali izbolj\v{s}ati uporabni\v{s}ko izku\v{s}njo.
 
+% POVZETEK
 \newpage
+\thispagestyle{empty}
 
 \section*{Povzetek}
 
-V tem strokovnem poročilu predstavljam razvoj spletne aplikacije MediForm, ki sem jo izdelal za Srednjo zdravstveno šolo Ljubljana. Aplikacija je namenjena dijakom zdravstvene nege za sprotno in strukturirano izpolnjevanje poročil o praktičnem pouku. Za digitalno rešitev sem se odločil zato, ker so bila papirna poročila zamudna, neenotna in pogosto izpolnjena šele tik pred rokom oddaje.
+V tej seminarski nalogi predstavljam razvoj spletne aplikacije MediForm, ki sem jo izdelal za Srednjo zdravstveno \v{s}olo Ljubljana. Aplikacija je namenjena dijakom zdravstvene nege za sprotno in strukturirano izpolnjevanje poro\v{c}il o obravnavah na podro\v{c}ju zdravstvene nege. Za digitalno re\v{s}itev sem se odlo\v{c}il zato, ker so bila papirna poro\v{c}ila zamudna, neenotna in pogosto izpolnjena \v{s}ele tik pred rokom oddaje, kar je povzro\v{c}alo, da so si dijaki podatke enostavno izmislili. V nalogi opisujem analizo potreb naro\v{c}nika, potek dogovarjanja, izbiro tehnologij ter tehni\v{c}no izvedbo klju\v{c}nih funkcionalnosti, pri \v{c}emer posebno pozornost namenjam varovanju osebnih podatkov in skladnosti z uredbo GDPR.
 
-V poročilu opisujem analizo potreb naročnika, potek dogovarjanja in komunikacije s stranko, izbiro tehnologij ter tehnično izvedbo ključnih funkcionalnosti. Ker je končna rešitev zasnovana kot frontend-only aplikacija, podatke shranjujem v piškotke in lokalno shrambo brskalnika. Tak pristop sem izbral zato, ker je aplikacija namenjena preprosti uporabi brez dodatne strežniške infrastrukture, šola pa ima tako večji nadzor nad informacijami in lažje upravlja z objavljeno različico.
+\textbf{Klju\v{c}ne besede:} spletna aplikacija, MediForm, zdravstvena nega, prakti\v{c}ni pouk, React, TypeScript, Tailwind CSS, localStorage, GDPR
 
-Pri vizualni podobi sem logotip najprej ustvaril s pomočjo ChatGPT, nato pa sem v Canvi dodal še napis MediForm in prilagodil končni videz.
-
-Ugotovil sem, da je dobra in sprotna komunikacija s stranko zelo pomembna za uspešen razvoj ter da aplikacija uporabnikom dejansko olajša delo.
-
-\textbf{Ključne besede:} spletna aplikacija, MediForm, zdravstvena nega, praktični pouk, React, TypeScript, Tailwind CSS, cookies, localStorage, analiza podatkov
-
+% KAZALO
 \newpage
+\romanpages
 
+\renewcommand{\contentsname}{Kazalo vsebine}
 \tableofcontents
 
 \newpage
 
 \listoffigures
 
+% VSEBINA
 \newpage
+\arabicpages
 
+% 1. UVOD
 \section{Uvod}
 
-V današnjem času se šole vse pogosteje srečujejo s potrebo po digitalizaciji administrativnih postopkov. Tudi v zdravstvenem izobraževanju se pojavlja težava, da dijaki poročila o praktičnem pouku pogosto izpolnjujejo prepozno, površno ali neenotno. To zmanjšuje preglednost njihovega dela in otežuje sprotno spremljanje opravljenih aktivnosti.
+Za to seminarsko nalogo sem se odlo\v{c}il, ker je profesorica Helena Bo\v{z}i\v{c} s Srednje zdravstvene \v{s}ole Ljubljana \v{z}elela, da bi obstajal digitalni na\v{c}in, ki bi poenostavil ustvarjanje poro\v{c}il njenih dijakov, ki odhajajo na prakso v bolni\v{s}nice. Skupaj smo ugotovili, da se pri izpolnjevanju teh poro\v{c}il pogosto pojavljajo te\v{z}ave, saj jih dijaki izpolnjujejo prepozno, povr\v{s}no in neenotno, kar ote\v{z}uje preglednost, spremljanje napredka ter delo mentorjev. Zaradi tega sem \v{z}elel raziskati, kako lahko digitalne re\v{s}itve pomagajo izbolj\v{s}ati ta proces.
 
-Zaradi tega konkretnega problema sem se odločil razviti spletno aplikacijo MediForm. Z njo sem želel dijakom omogočiti, da poročila izpolnjujejo sproti, z vnaprej pripravljenimi možnostmi izbire in z manj ročnega tipkanja. Hkrati sem želel izdelati rešitev, ki bi bila dovolj pregledna, varna in preprosta za uporabo v šolskem okolju.
+Danes se \v{s}ole vedno bolj usmerjajo v digitalizacijo, saj ta omogo\v{c}a hitrej\v{s}e delo, bolj\v{s}o organizacijo podatkov in manj napak. Digitalni obrazci lahko nadomestijo ro\v{c}no izpolnjevanje ter omogo\v{c}ijo bolj strukturiran in pregleden vnos podatkov. Kljub temu pa ostaja odprto vpra\v{s}anje, kako zasnovati tak sistem, da bo enostaven za uporabo in hkrati dovolj u\v{c}inkovit za potrebe zdravstvenega izobra\v{z}evanja.
 
-Cilji seminarske naloge so bili naslednji:
+Namen naloge je bil razviti spletno aplikacijo, ki omogo\v{c}a enostavno in sprotno izpolnjevanje poro\v{c}il o zdravstveni negi. Pri tem sem se osredoto\v{c}il na preglednost, enotnost zapisov in varno shranjevanje podatkov. Raziskal sem tudi, katere tehnologije so najbolj primerne za tak\v{s}no re\v{s}itev in zakaj.
+
+Cilji seminarske naloge so bili:
 \begin{itemize}
-    \item analizirati potrebe naročnika,
-    \item razviti spletno aplikacijo za poročanje o zdravstveni negi,
-    \item pojasniti uporabljene tehnologije,
-    \item opisati ključne dele kode in razloge za takšno zasnovo,
-    \item prikazati, kako je potekalo delo in komunikacija s stranko,
-    \item predstaviti rezultate analize uporabe aplikacije.
+    \item analizirati obstoje\v{c}e stanje in potrebe uporabnikov,
+    \item razviti delujo\v{c}o spletno aplikacijo za izdelavo poro\v{c}il,
+    \item razlo\v{z}iti uporabljene tehnologije in na\v{c}in delovanja,
+    \item zagotoviti varno ravnanje z ob\v{c}utljivimi podatki (GDPR),
+    \item prikazati potek razvoja in sodelovanja s stranko.
 \end{itemize}
 
-\section{Teoretični uvod}
+Pri delu sem uporabil metodo analize problema, na\v{c}rtovanja re\v{s}itve ter prakti\v{c}ne implementacije aplikacije. Poleg tega sem testiral delovanje sistema in preverjal, ali re\v{s}itev dejansko izbolj\v{s}a proces izpolnjevanja poro\v{c}il.
 
-Digitalna transformacija v izobraževanju pomeni uvajanje digitalnih tehnologij v učne in administrativne procese. Pri strokovnem in poklicnem izobraževanju je ta prehod še posebej pomemben, saj omogoča boljšo preglednost, hitrejše delo in manj napak pri dokumentiranju. Evropska komisija poudarja, da digitalna orodja izboljšujejo dostopnost informacij in omogočajo učinkovitejše upravljanje izobraževalnih procesov (European Commission, 2020).
+% 2. POTREBE NAROCNIKA
+\section{Potrebe naro\v{c}nika}
 
-Pri digitalnih obrazcih je pomembno, da so postopki vnosa podatkov enostavni in strukturirani. Selwyn (2016) izpostavlja, da digitalni sistemi zmanjšujejo potrebo po ponavljajočem ročnem zapisovanju in omogočajo bolj dosledno obdelavo podatkov. Tudi razvoj oblačnih rešitev, kot je Firebase, prispeva k večji dostopnosti in prilagodljivosti aplikacij, saj podatki niso vezani le na eno napravo ali eno lokacijo (Firebase, 2026).
+\subsection{Obstoje\v{c}i na\v{c}in dela in te\v{z}ave}
 
-V MediForm sem zato upošteval načela digitalne preglednosti, varnega shranjevanja podatkov in sprotnega beleženja. Takšen pristop je bil primeren za okolje zdravstvene nege, kjer je pomembno, da dijaki poročila izpolnjujejo redno in v čim bolj enotni obliki.
+Ko sem prvi\v{c} stopil v stik s Heleno Bo\v{z}i\v{c} Jane\v{z}i\v{c} s Srednje zdravstvene \v{s}ole Ljubljana, mi je predstavila obstoje\v{c}i na\v{c}in izpolnjevanja poro\v{c}il. Dijaki zdravstvene nege so dokumentacijo izpolnjevali \textbf{na papirnih obrazcih, ki so jih pisali v Word predlogo, ki jo je ustvarila sama}. Tak na\v{c}in dela je povzro\v{c}al \v{s}tevilne te\v{z}ave.
 
-Pri razvoju spletne aplikacije sem se opiral tudi na osnovna načela spletnih tehnologij. HTML sem uporabil kot osnovno strukturo obrazcev, CSS oziroma Tailwind CSS za oblikovanje in preglednost, JavaScript pa za logiko uporabniške interakcije. React mi je omogočil, da sem posamezne dele vmesnika razdelil v komponente in jih lažje ponovno uporabil, TypeScript pa mi je pomagal pri natančnejšem razvoju, saj sem že med pisanjem hitreje opazil morebitne napake v tipih.
+Ker so dijaki poro\v{c}ila urejali v Word dokumentu in pogosto \v{s}ele tik pred rokom oddaje, so si \textbf{podatke preprosto izmislili}. Namesto da bi bele\v{z}ili opa\v{z}anja sproti med prakso, so jih napisali po spominu ali jih si jih celo izmislil. To je povzro\v{c}ilo, da poro\v{c}ila niso odra\v{z}ala dejanskega stanja pri pacientu, ampak so bila zgolj formalnost.
 
-Za lokalni razvoj in hitrejše testiranje sem uporabil Vite, ker sem lahko spremembe vmesnika hitro preverjal brez dolgotrajnega zaganjanja. To je bilo pomembno predvsem pri delu z več vnosnimi polji, tabelami in izbirnimi seznami, kjer je bilo treba večkrat preveriti, kako se elementi obnašajo na različnih zaslonih. Takšna izbira tehnologij je bila skladna z mojim ciljem, da aplikacijo razvijem pregledno, hitro in dovolj preprosto za šolsko uporabo.
-
-\section{Jedro}
-
-\subsection{Analiza problema in komunikacija s stranko}
-
-\subsubsection{Obstoječi način dela}
-
-Ko sem prvič stopil v stik s Heleno Božič Janežič s Srednje zdravstvene šole Ljubljana, mi je predstavila obstoječi način izpolnjevanja poročil. Dijaki zdravstvene nege so dokumentacijo izpolnjevali na papirju, pogosto tik pred rokom oddaje. Ugotovil sem, da je tak način dela povzročal več težav:
-
-\begin{figure}[h]
+\begin{figure}[ht]
     \centering
-    \includegraphics[width=0.28\textwidth]{slike/zdravstvena_sola_jubljana_logo.png}
-    \caption{Logotip Srednje zdravstvene šole Ljubljana, naročnika spletne aplikacije}
+    \includegraphics[width=0.82\textwidth]{slike/primer_porocila_ki_so_ga_imeli_prej.png}
+  \caption{Primer originalnega obrazca, ki so ga dijaki izpolnjevali prej (izrez iz Wordove predloge)}
 \end{figure}
 
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.82\textwidth]{slike/primer_porocila_ki_so_ga_imeli_prej_vsebina.png}
+  \caption{Vsebina originalnega obrazca --- primer izpolnjenih podatkov}
+\end{figure}
+
+Klju\v{c}ne te\v{z}ave obstoje\v{c}ega sistema so bile:
 \begin{itemize}
-    \item zapisi so bili pogosto površni,
-    \item nekateri deli poročil so se ponavljali,
+    \item zapisi so bili pogosto povr\v{s}ni in izmi\v{s}ljeni tik pred oddajo,
+    \item nekateri deli poro\v{c}il so se ponavljali in bili neenotni,
     \item sprotnega preverjanja skoraj ni bilo,
-    \item ročno pisanje je bilo za dijake zamudno.
+    \item pisanje poro\v{c}ila brez vnaprej ponujenih mo\v{z}nosti je bilo za dijake zamudno in neprakti\v{c}no na terenu (ve\v{c}inoma so jih pisali kasneje na ra\v{c}unalniku).
 \end{itemize}
 
-\subsubsection{Proces dogovarjanja}
+\subsection{Proces dogovarjanja}
 
-Proces dogovarjanja sem razdelil na več faz. Najprej sem prejel papirne obrazce in skupaj z naročnico pregledal, kateri deli so zares potrebni in katere bi bilo mogoče poenostaviti. Na podlagi tega sem zasnoval prvo različico aplikacije.
+Proces dogovarjanja sem razdelil na ve\v{c} faz. Najprej sem prejel obrazce in skupaj z naro\v{c}nico pregledal, kateri deli so zares potrebni in katere bi bilo mogo\v{c}e poenostaviti. Na podlagi tega sem zasnoval prvo razli\v{c}ico aplikacije.
 
-Ko so dijaki začeli aplikacijo uporabljati, sem dobil prve povratne informacije. Ugotovil sem, da so se pri prijavi pojavile določene težave, zato sem popravil način shranjevanja stanja in izboljšal stabilnost delovanja. Kasneje je naročnica predlagala, da bi bilo bolje, če bi dijaki večino podatkov le označevali z izborom možnosti, namesto da jih ročno vnašajo.
+Ko so dijaki za\v{c}eli aplikacijo uporabljati, sem dobil prve povratne informacije. Ugotovil sem, da so se pri prijavi pojavile dolo\v{c}ene te\v{z}ave, zato sem popravil na\v{c}in shranjevanja stanja in izbolj\v{s}al stabilnost delovanja. Naro\v{c}nica je posebej poudarila, da mora biti re\v{s}itev primerna za uporabo na telefonu, omogo\v{c}ati sprotno izpolnjevanje in poenostaviti nekatere dele obrazca.
 
-V nadaljevanju sem aplikacijo dopolnjeval glede na pripombe iz prakse. Naročnica je posebej poudarila, da mora biti rešitev primerna za uporabo na telefonu, omogočati sprotno izpolnjevanje in poenostaviti nekatere dele obrazca. Na tej osnovi sem odstranil odvečne elemente in izboljšal uporabniški vmesnik.
-
-\subsubsection{Ključne ugotovitve}
-
-Iz komunikacije s stranko sem ugotovil naslednje:
+Iz komunikacije s stranko sem ugotovil naslednje klju\v{c}ne zahteve:
 \begin{itemize}
-    \item večina podatkov se v poročilih ponavlja,
-    \item uporabniki potrebujejo hitro in enostavno izpolnjevanje,
-    \item aplikacija mora delovati na različnih napravah,
-    \item sprotno shranjevanje je nujno,
-    \item zasebnost pacientovih podatkov mora biti ustrezno zaščitena.
+    \item ve\v{c}ina podatkov se v poro\v{c}ilih ponavlja --- to je mogo\v{c}e re\v{s}evati z izbirnimi seznami,
+    \item aplikacija mora omogo\v{c}ati hitro in enostavno izpolnjevanje,
+    \item delovanje na razli\v{c}nih napravah (predvsem telefonih) je nujno,
+    \item sprotno shranjevanje je pogoj, da se podatki ne izgubijo,
+    \item zasebnost pacientovih podatkov mora biti ustrezno za\v{s}\v{c}itena.
 \end{itemize}
+
+S tem projektom sem \v{z}elel z vsemi mo\v{z}nostmi za hitro izpolnjevanje omogo\v{c}iti, da se podatki \v{c}im prej vpi\v{s}ejo in da so resni\v{c}ni --- da dijaki poro\v{c}ila izpolnjujejo sproti med prakso, ne \v{s}ele naknadno.
+
+Naro\v{c}nica je poudarila, da naj spletna aplikacija slu\v{z}i kot kontrolni seznam. Dijak naj bi po obravnavi pri posameznem pacientu hitro dopisal, ozna\v{c}il ali kliknil, katere aktivnosti je tisti dan dejansko opravil. Pomembno ji je bilo, da je vnos \v{c}im hitrej\v{s}i, preglednej\v{s}i in dovolj enostaven za uporabo na telefonu, saj morajo dijaki dokumentacijo zaklju\v{c}iti takoj po delu s pacientom, preden pozabijo podrobnosti.
+
+Najprej so aplikacijo testirale le izbrane dijakinje, kasneje pa je naro\v{c}nica uporabo aplikacije raz\v{s}irila na celoten oddelek. Med tem sem tudi prilagajal vsebino kontrolnega seznama glede na njihove ugotovitve z dela na terenu.
+
+Ureditev skladnosti z zakonodajo in pravili varstva osebnih podatkov je predlagal mentor Ale\v{s} Vol\v{c}ini, saj aplikacija obdeluje ob\v{c}utljive podatke, kot so starost, spol in zdravstveno stanje pacienta. Zato je bilo pomembno, da je sistem zasnovan tako, da ti podatki ne zaidejo na stre\v{z}nike velikih spletnih korporacij ali drugih nepoobla\v{s}\v{c}enih subjektov.
+
+% 3. RESITEV - APLIKACIJA MEDIFORM
+\section{Aplikacija MediForm}
+
+\subsection{Kaj aplikacija dela}
+
+MediForm je spletna aplikacija, ki dijakom zdravstvene nege omogo\v{c}a strukturirano izpolnjevanje poro\v{c}il o prakti\v{c}nem pouku neposredno na telefonu ali ra\v{c}unalniku. Namesto ro\v{c}nega pisanja dijak izbira med vnaprej pripravljenimi mo\v{z}nostmi, vna\v{s}a klju\v{c}ne meritve in ob koncu izvozi poro\v{c}ilo v obliki PDF datoteke. \v{C}e pa \v{z}eli ohraniti strukturo obrazca, lahko poro\v{c}ilo shrani tudi v obliki JSON datoteke, ki jo lahko kasneje ponovno nalo\v{z}i in nadaljuje z izpolnjevanjem na drugi napravi.
+
+\IfFileExists{slike/mediform_user_area_home_page.png}{%
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.82\textwidth]{slike/mediform_user_area_home_page.png}
+  \caption{Doma\v{c}a stran aplikacije MediForm}
+\end{figure}
+}{}
 
 \subsection{Izbira tehnologij}
 
-Pri razvoju sem se odločil za naslednji tehnološki sklad:
+\subsubsection{Tehnolo\v{s}ki sklad}
 
-\begin{itemize}
-    \item \textbf{React} in \textbf{TypeScript} za uporabniški vmesnik,
-    \item \textbf{Tailwind CSS} za oblikovanje,
-    \item \textbf{Vite} za hiter razvoj in lokalno testiranje,
-    \item \textbf{Cookies} in \textbf{localStorage} za shranjevanje stanja v brskalniku.
-\end{itemize}
+Pri razvoju sem se odlo\v{c}il za naslednji tehnolo\v{s}ki sklad: React in TypeScript za uporabni\v{s}ki vmesnik, Tailwind CSS za oblikovanje, Vite za hiter razvoj in lokalno testiranje ter localStorage in pi\v{s}kotke za shranjevanje stanja v brskalniku.
 
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.22\textwidth]{slike/react_logo.png}
-    \hspace{1.5cm}
-    \includegraphics[width=0.35\textwidth]{slike/tailwindlogo.png}
-    \caption{Logotipa knjižnic React in Tailwind CSS}
-\end{figure}
+\textbf{React} je knji\v{z}nica za gradnjo vmesnikov iz manj\v{s}ih, samostojnih komponent. Prednost je v ponovni uporabnosti in preglednosti kode. Slabost je, da zahteva dolo\v{c}eno predznanje in je za enostavne projekte lahko preobse\v{z}en. V tem projektu je bila primerna izbira, ker ima obrazec veliko ponavljajo\v{c}ih se gradnikov.
 
-Za ta izbor sem se odločil, ker omogoča hitro razvojno delo, dobro preglednost kode in enostavno nadgradnjo aplikacije. V produkcijski različici sem se odpovedal strežniškemu delu, saj gre za frontend-only rešitev, pri kateri želim imeti podatke pod nadzorom znotraj same spletne strani in brskalnika.
+\textbf{TypeScript} je nadgradnja JavaScripta z dodanimi tipi. Prednost je, da se napake odkrijejo \v{z}e pri pisanju kode in ne \v{s}ele pri izvajanju. Slabost je nekoliko ve\v{c} pisanja. Pri projektu s kompleksnimi obrazci je prispeval k stabilnosti.
 
-Pri primerjavi z lanskimi rešitvami sem posebej pazil, da so tehnološka pojasnila krajša, vendar bolj povezana z dejanskim delovanjem aplikacije. Namesto splošnega opisa sem se osredotočil na to, kako React, TypeScript in piškotki konkretno pomagajo pri izpolnjevanju obrazca, prikazu podatkov in preprostem objavljanju spletne strani.
+\textbf{Tailwind CSS} je ogrodje za oblikovanje, ki temelji na razredih. Prednost je hitrost oblikovanja brez pisanja lo\v{c}enih CSS datotek. Slabost je, da so HTML elementi videti polni razredov, vendar enotstno oblikovanja, ki ji omogo\v{c}a, to pretehta.
 
-\subsubsection{Primer importov in namen knjižnic}
+\textbf{Vite} je orodje za lokalni razvoj, ki omogo\v{c}a takoj\v{s}nje osve\v{z}evanje strani ob spremembi kode. To je bistveno pospe\v{s}ilo razvoj.
 
-Spodaj je primer dejanskih \texttt{import} stavkov iz aplikacije, kjer je jasno vidno, katere knjižnice in komponente uporabljam:
+\subsubsection{Zakaj frontend-only re\v{s}itev}
 
-\begin{lstlisting}
+V zgodnji fazi projekta sem preverjal tudi mo\v{z}nosti shranjevanja podatkov in integracijo sistema prijave na storitvi Firebase, vendar sem to opustil. Razlog za to je bil, da je naro\v{c}nica \v{z}elela enostavno re\v{s}itev brez nepotrebne kompleksnosti. Mentor je predlagal, da je za paciente varneje, \v{c}e se podatki shranjujejo izklju\v{c}no lokalno. Tak\v{s}en na\v{c}in zasnove aplikacije omogo\v{c}a tudi ve\v{c}jo stabilnost, saj je edini dejavnik, ki lahko vpliva na nedosegljivost aplikacije, morebitna nedosegljivost ponudnika gostovanja (v mojem primeru Vercel). Poleg tega ima Srednja zdravstvena \v{s}ola v prihodnosti zelo enostavno mo\v{z}nost, da spletno aplikacijo gosti na lastnih stre\v{z}nikih, brez zapletenega postopka vzpostavitve podatkovne baze ali drugih dodatnih sistemov.
+
+\subsubsection{Primer importov in namen knji\v{z}nic}
+
+Izsek kode 1 prikazuje dejanske uvozne stavke iz aplikacije, ki jasno poka\v{z}ejo, katere knji\v{z}nice so v uporabi.
+
+\begin{lstlisting}[language=JavaScript, caption={Izsek kode 1: Uvozi (importi) v glavni datoteki App.tsx}]
 import { useState, useEffect } from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+} from "react-router-dom";
 import CookieConsent from "./components/CookieConsent";
 import Checklist from "./checklist/checklist";
-
 import { PDFDocument, rgb } from "pdf-lib";
 import fontkit from "@pdf-lib/fontkit";
 \end{lstlisting}
 
-Razlaga: knjižnica \texttt{react} omogoča gradnjo vmesnika s komponentami in stanje obrazca (\texttt{useState}, \texttt{useEffect}). Knjižnica \texttt{react-router-dom} skrbi za prehode med stranmi, na primer med začetnim zaslonom, obrazcem in pravnimi stranmi. Komponenta \texttt{CookieConsent} upravlja soglasje za piškotke, komponenta \texttt{Checklist} pa je osrednji del za izpolnjevanje poročila. Knjižnici \texttt{pdf-lib} in \texttt{@pdf-lib/fontkit} uporabljam za generiranje PDF poročila in pravilno delo s pisavami pri izvozu dokumenta.
+Kot je razvidno iz Izseka kode~1, knji\v{z}nica \texttt{react} omogo\v{c}a gradnjo vmesnika s komponentami in upravljanje stanja (\texttt{useState}, \texttt{useEffect}). Knji\v{z}nica \texttt{react-router-dom} skrbi za prehode med stranmi. Komponenta \texttt{CookieConsent} upravlja soglasje za pi\v{s}kotke, \texttt{Checklist} pa je osrednji del za izpolnjevanje poro\v{c}ila. Knji\v{z}nici \texttt{pdf-lib} in \texttt{@pdf-lib/fontkit} sta namenjeni generiranju PDF poro\v{c}il s pravilnimi pisavami.
 
-\subsection{Arhitektura aplikacije}
+\subsection{Arhitektura in struktura projekta}
 
-Aplikacijo sem zasnoval kot frontend-only rešitev. Vse bistvene funkcionalnosti potekajo v brskalniku, podatke pa shranjujem v piškotke in lokalno shrambo. Takšna zasnova je bila primerna, ker aplikacija ne potrebuje ločenega strežniškega dela in je zato enostavnejša za vzdrževanje, objavo in uporabo v šolskem okolju.
+Aplikacijo sem zasnoval kot frontend-only re\v{s}itev. Vse bistvene funkcionalnosti potekajo v brskalniku, podatki pa se shranjujejo lokalno. Ob zagonu aplikacije (na poti \texttt{/}) se uporabniku najprej prika\v{z}e prijavna stran, kjer vnese osnovne osebne podatke, kot so e-po\v{s}ta, ime, priimek, razred, \v{s}ola ter podro\v{c}je oziroma ustanova. Po uspe\v{s}nem vnosu se odpre nadzorna plo\v{s}\v{c}a, kjer so prikazani vsi obrazci, shranjeni v \texttt{localStorage}. Na dnu prijavne strani sta na voljo tudi podstrani \texttt{/pogoji-uporabe} in \texttt{/zasebnost}, ki sem ju dodal zaradi skladnosti z zakonodajo.
 
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.8\textwidth]{slike/mediform_user_area_home_page.png}
-    \caption{Slika 1: Domača stran aplikacije MediForm}
+\IfFileExists{slike/prikaz_login_page_mediform.png}{%
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.82\textwidth]{slike/prikaz_login_page_mediform.png}
+  \caption{Prijavna stran aplikacije MediForm}
 \end{figure}
+}{}
 
-Takšna arhitektura omogoča jasno ločitev odgovornosti med prikazom podatkov in njihovim shranjevanjem v brskalniku. Uporabniški vmesnik je pregleden, logika pa ostane v sami aplikaciji, zato je objava hitrejša in enostavnejša.
+Osnovna JSON struktura obrazca je shranjena v datoteki \texttt{public/cached-forms/zdravstvena-nega.json}, iz katere aplikacija ob zagonu prebere definicije polj, skupin in mo\v{z}nosti ter na tej osnovi dinami\v{c}no generira uporabni\v{s}ki obrazec. Datoteka \texttt{index.json} v isti mapi dolo\v{c}a seznam razpolo\v{z}ljivih obrazcev.
 
-\subsection{Tehnična izvedba ključnih funkcionalnosti}
+Mapa \texttt{assets} vsebuje izvorne JSON datoteke obrazcev, ki slu\v{z}ijo kot razvojna osnova in jih razvijalec med pripravo in posodabljanjem la\v{z}je ureja. Mapa \texttt{public/cached-forms} pa vsebuje predpomnjene razli\v{c}ice obrazcev, ki jih aplikacija dejansko nalaga med delovanjem, zato je nalaganje hitrej\v{s}e in mo\v{z}no tudi brez neposrednega dostopa do zalednega sistema.
+
+Mapa \texttt{public/fonts} vsebuje pisave, ki se uporabljajo pri izvozu PDF dokumentov, da so slovenski znaki pravilno prikazani tudi v generiranem poro\v{c}ilu. Skripta \texttt{scripts} je namenjena pomo\v{z}nim opravilom, kot so pretvorba podatkov, priprava predpomnjenih obrazcev, popravljanje strukture JSON datotek in drugi tehni\v{c}ni postopki med razvojem.
+
+Glavni del aplikacije se nahaja v mapi \texttt{src}. Datoteka \texttt{App.tsx} povezuje glavno logiko aplikacije, \texttt{main.tsx} pa poskrbi za zagon aplikacije v brskalniku. V mapi \texttt{checklist} so komponente in logika za izpolnjevanje obrazca, torej za prikaz vpra\v{s}anj, ve\v{c}kratno in enkratno izbiro ter generiranje PDF izvoza. Datoteka \texttt{pdfGenerator.tsx} je namenjena pripravi kon\v{c}nega dokumenta.
+
+Mapa \texttt{components} vsebuje splo\v{s}ne uporabni\v{s}ke komponente, kot so prijava uporabnika, vnos osnovnih podatkov, soglasje za pi\v{s}kotke in podobni deli vmesnika. Podmapa \texttt{components/ui} vsebuje osnovne gradnike uporabni\v{s}kega vmesnika, na primer gumbe, polja, dialoge in druge ponovno uporabne elemente.
+
+V mapi \texttt{profil} so podstrani, ki pokrivajo pravni in informativni del aplikacije, predvsem \texttt{Privacy.tsx} in \texttt{Terms.tsx}. Mapa \texttt{selector} vsebuje zaslon oziroma komponento za izbor obrazca, kjer uporabnik izbere, katero poro\v{c}ilo \v{z}eli izpolnjevati.
+
+Spodaj je prikazana struktura datotek projekta:
+
+\begin{center}
+\begin{minipage}{0.85\textwidth}
+\ttfamily\small
+\begin{verbatim}
+MediForm/
+|-- assets/
+|   |-- pud-obrazec.json
+|   `-- zdravstvena-nega.json
+|-- public/
+|   |-- cached-forms/
+|   |   |-- index.json
+|   |   `-- zdravstvena-nega.json
+|   `-- fonts/
+|       |-- Roboto-Bold.ttf
+|       `-- Roboto-Regular.ttf
+|-- scripts/           (26 pomoznih skript za testiranje delovanja)
+`-- src/
+    |-- App.tsx
+    |-- main.tsx
+    |-- checklist/
+    |   |-- checklist.tsx
+    |   |-- pdfGenerator.tsx
+    |   |-- MultiSelectInput.tsx
+    |   `-- SingleSelectComponent.tsx
+    |-- components/
+    |   |-- CookieConsent.tsx
+    |   |-- UserInfoForm.tsx
+    |   |-- UserLogin.tsx
+    |   `-- ui/
+    |-- profil/
+    |   |-- profil.tsx
+    |   |-- Privacy.tsx
+    |   `-- Terms.tsx
+    `-- selector/
+        `-- selector.tsx
+\end{verbatim}
+\end{minipage}
+\end{center}
+
+\subsection{Tehni\v{c}na izvedba klju\v{c}nih funkcionalnosti}
 
 \subsubsection{Struktura obrazca in izbira podatkov}
 
-Pri zasnovi obrazca sem se odločil, da bodo ključni podatki prikazani v obliki spustnih seznamov, večkratnih izbir in krajših besedilnih vnosov. Tak pristop sem izbral zato, ker je dijakom na praksi hitrejši od ročnega tipkanja daljših opisov.
+Pri zasnovi obrazca sem se odlo\v{c}il, da bodo klju\v{c}ni podatki prikazani v obliki spustnih seznamov, ve\v{c}kratnih izbir in kraj\v{s}ih besedilnih vnosov. Tak pristop sem izbral zato, ker je dijakom na praksi hitrej\v{s}i od ro\v{c}nega tipkanja in zmanj\v{s}a mo\v{z}nost vnosa izmisljenih podatkov.
 
-\begin{figure}[h]
+Moj kontrolni seznam podpira ve\v{c} na\v{c}inov vnosnih polj: prosto besedilno polje (\texttt{string}), \v{s}tevilski vnos (\texttt{number}), potrditveno polje (\texttt{boolean}, izbira da/ne), datum (\texttt{date}, ki ima vgrajen tudi izbirnik datuma), tabelo (za zapise, kot so na primer aplikacije zdravil) ter izbiro z enkratnim ali ve\v{c}kratnim izborom (\texttt{single select} in \texttt{multiple select}).
+\IfFileExists{slike/mediform_obrazec_podatkiopacientuu_dropdown_example.png}{%
+\begin{figure}[ht]
     \centering
-    \includegraphics[width=0.7\textwidth]{slike/mediform_obrazec_podatkiopacientuu_dropdown_example.png}
-    \caption{Slika 2: Primer spustnega seznama za izbiro podatkov}
+    \includegraphics[width=0.75\textwidth]{slike/mediform_obrazec_podatkiopacientuu_dropdown_example.png}
+  \caption{Primer spustnega seznama za izbiro podatkov o pacientu}
 \end{figure}
+}{}
 
-\begin{figure}[h]
+\IfFileExists{slike/dropdown_miedform_example_aktivnosti_zdravstvene_nege.png}{%
+\begin{figure}[ht]
     \centering
-    \includegraphics[width=0.7\textwidth]{slike/dropdown_miedform_example_aktivnosti_zdravstvene_nege.png}
-    \caption{Slika 3: Primer večkratne izbire aktivnosti zdravstvene nege}
+    \includegraphics[width=0.75\textwidth]{slike/dropdown_miedform_example_aktivnosti_zdravstvene_nege.png}
+  \caption{Primer ve\v{c}kratne izbire aktivnosti zdravstvene nege}
 \end{figure}
+}{}
 
-\textbf{Primer kode --- shranjevanje stanja obrazca v brskalniku:}
+Pri enkratnem izboru lahko uporabnik izbere eno izmed vnaprej pripravljenih mo\v{z}nosti ali vnese lastno vrednost, medtem ko lahko pri ve\v{c}kratnem izboru izbere ve\v{c} mo\v{z}nosti in po potrebi doda tudi svoje.
 
-\begin{lstlisting}
-// Uporaba localStorage za sprotno shranjevanje stanja obrazca
+
+\subsubsection{Shranjevanje stanja obrazca in localStorage}
+
+Izsek kode 2 prikazuje, kako se stanje obrazca shranjuje v lokalno shrambo brskalnika skupaj s \v{c}asovnim \v{z}igom poteka.
+
+\begin{lstlisting}[language=JavaScript, caption={Izsek kode 2: Shranjevanje in branje stanja obrazca z rokom veljavnosti 60 dni}]
+// Shranjevanje stanja: expiration = 60 dni (priblizno 2 meseca)
 const saveFormState = (formId, formState) => {
-  localStorage.setItem(`mediform-${formId}`, JSON.stringify(formState));
+  const expirationDate =
+    Date.now() + 60 * 24 * 60 * 60 * 1000; // 60 dni v ms
+  const dataToStore = {
+    state: formState,
+    expires: expirationDate,
+  };
+  localStorage.setItem(
+    `mediform-${formId}`,
+    JSON.stringify(dataToStore)
+  );
 };
 
+// Branje: ob vsaki uporabi preverimo, ce je vnos se veljaven
 const loadFormState = (formId) => {
-  const storedState = localStorage.getItem(`mediform-${formId}`);
-  return storedState ? JSON.parse(storedState) : null;
+  const stored = localStorage.getItem(`mediform-${formId}`);
+  if (!stored) return null;
+  const parsed = JSON.parse(stored);
+  // Preverimo casovni zig
+  if (Date.now() > parsed.expires) {
+    localStorage.removeItem(`mediform-${formId}`); // Brisanje
+    return null;
+  }
+  return parsed.state;
 };
 \end{lstlisting}
 
-Razlaga: Funkcija \texttt{saveFormState} ob vsakem pomembnem vnosu shrani celotno stanje obrazca pod enoličnim ključem \texttt{mediform-formId}. Funkcija \texttt{loadFormState} isti ključ prebere ob ponovnem obisku in vrne že izpolnjene vrednosti. V praksi to pomeni, da dijak lahko zapre telefon in nadaljuje kasneje brez ponovnega vnašanja.
+Kot je razvidno iz Izseka kode~2, vsak shranjeni dokument vsebuje poleg vsebine tudi \v{c}asovni \v{z}ig poteka (\texttt{expires}). Ob vsakem naslednjem odprtju aplikacije se preveri, ali je shranjeni podatek \v{s}e znotraj veljavnega obdobja dveh mesecev. \v{C}e \v{c}as pote\v{c}e, se podatek samodejno izbri\v{s}e. To je bistveno z vidika varstva osebnih podatkov.
 
-\subsubsection{Piškotki in shranjevanje seje}
+\subsubsection{Pi\v{s}kotki in upravljanje seje}
 
-Namesto strežniške prijave sem uporabil preprost pristop z brskalniškimi piškotki. Ti so primerni za krajše shranjevanje pomembnih nastavitev, saj jih lahko aplikacija prebere ob naslednjem obisku strani.
+Pi\v{s}kotki se v aplikaciji MediForm uporabljajo za shranjevanje podatkov o prijavi in nastavitvah brskalnika. Izsek kode 3 prikazuje implementacijo pisanja in branja pi\v{s}kotkov.
 
-\textbf{Primer kode --- zapis v piškotek:}
-
-\begin{lstlisting}
-// Shrani izbiro uporabnika v piskotek
+\begin{lstlisting}[language=JavaScript, caption={Izsek kode 3: Zapis in branje piskotkov za upravljanje seje}]
+// Shrani podatek v piskotek z datumom poteka
 const setCookie = (name, value, days) => {
-  const expires = new Date(Date.now() + days * 86400000).toUTCString();
-  document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/; SameSite=Lax`;
+  const expires =
+    new Date(Date.now() + days * 86400000).toUTCString();
+  document.cookie =
+    `${name}=${encodeURIComponent(value)};` +
+    ` expires=${expires}; path=/; SameSite=Lax`;
 };
 
+// Preberi vrednost piskotka po imenu
 const getCookie = (name) => {
-  const cookies = document.cookie.split('; ').find(row => row.startsWith(`${name}=`));
-  return cookies ? decodeURIComponent(cookies.split('=')[1]) : null;
+  const cookies = document.cookie
+    .split("; ")
+    .find((row) => row.startsWith(`${name}=`));
+  return cookies
+    ? decodeURIComponent(cookies.split("=")[1])
+    : null;
 };
 \end{lstlisting}
 
-Razlaga: Funkcija \texttt{setCookie} zapiše podatek skupaj z datumom poteka, \texttt{getCookie} pa ta podatek vrne ob naslednjem odprtju aplikacije. Piškotke sem uporabil za manjše podatke, na primer zadnji izbor uporabnika, ker so hitri za branje in ne zahtevajo strežniške infrastrukture.
-
-\subsubsection{Zakaj ni ločenega strežnika}
-
-V zgodnji fazi projekta sem preverjal tudi strežniške možnosti, vendar sem jih v produkcijski različici opustil. Razlog je bil predvsem v tem, da je naročnica želela enostavno rešitev z manj odvisnostmi, šola pa večji nadzor nad informacijami. Zato sem končno različico objavil kot statično spletno stran, kjer so podatki shranjeni lokalno v brskalniku in v piškotkih.
-
-Takšna odločitev je bila smiselna tudi zaradi lažjega vzdrževanja. Če aplikacija ne potrebuje ločenega strežnika, je manj točk, kjer bi lahko prišlo do napake, hkrati pa je objava hitrejša.
+Kot je razvidno iz Izseka kode~3, funkcija \texttt{setCookie} zapi\v{s}e podatek skupaj z datumom poteka, funkcija \texttt{getCookie} pa ga vrne ob naslednjem odprtju. Ob odjavi (\textit{logout}) se pi\v{s}kotki seje izbri\v{s}ejo, kar prepre\v{c}i dostop nepoobla\v{s}\v{c}enim osebam, ki bi morda lahko pri\v{s}le v stik z aplikacijo na npr. javnih ra\v{c}unalnikih tudi po prenehanju na\v{s}e uporabe.
 
 \subsubsection{Prikaz napredka obrazca}
 
-Ker mora dijak videti, koliko obrazca je že izpolnil, sem dodal tudi preprost izračun napredka. To je pomembno predvsem zato, ker uporabnik na praksi lažje spremlja, ali je poročilo skoraj končano ali ga mora še dopolniti.
+Izsek kode 4 prikazuje logiko, s katero aplikacija preveri, ali so posamezni pododseki in celotni odseki obrazca v celoti izpolnjeni, ter nato v naslovu prika\v{z}e zeleno kljukico.
 
-\textbf{Primer kode --- izračun napredka:}
+\begin{lstlisting}[language=JavaScript, caption={Izsek kode 4: Preverjanje dokon\v{c}anosti odsekov in prikaz kljukice}]
+const isSubcategoryComplete = (categoryId, subcategoryId) => {
+  if (!list) return false;
 
-\begin{lstlisting}
-const calculateProgress = (completedFields, totalFields) => {
-    if (!totalFields) return 0;
-    return Math.round((completedFields / totalFields) * 100);
+  const subcategory = list.categories[categoryId]?.subcategories[subcategoryId];
+  if (!subcategory) return false;
+
+  const elements = Object.values(subcategory.elements);
+  if (elements.length === 0) return false;
+
+  return elements.every((element) => {
+    // Tabela je dokoncana, ce vsebuje dejanski vnos
+    if (element.type === "table") return isTableModified(element);
+
+    // Pri bool zadostuje eksplicitna vrednost true ali false
+    if (element.type === "bool") {
+      return element.value === true || element.value === false;
+    }
+
+    // Vecizbirna polja: vsaj ena izbrana moznost
+    if (Array.isArray(element.value)) return element.value.length > 0;
+
+    // Ostala polja: vrednost ne sme biti prazna
+    return (
+      element.value !== null &&
+      element.value !== undefined &&
+      element.value !== ""
+    );
+  });
 };
 
-const progress = calculateProgress(18, 24);
+const isCategoryComplete = (categoryId) => {
+  if (!list) return false;
+
+  const category = list.categories[categoryId];
+  if (!category) return false;
+
+  return Object.keys(category.subcategories).every((subcategoryId) =>
+    isSubcategoryComplete(categoryId, subcategoryId)
+  );
+};
+
+// Prikaz kljukice v naslovu odseka
+{isCategoryComplete(categoryId) && (
+  <CheckCircle2 className="h-5 w-5 text-green-500 flex-shrink-0" />
+)}
 \end{lstlisting}
 
-Razlaga: V funkcijo podam število izpolnjenih in vseh polj. Rezultat je odstotek, ki ga prikažem v uporabniškem vmesniku. Ta prikaz uporabniku takoj pove, ali je poročilo pripravljeno za oddajo, in zmanjša možnost, da bi spregledal obvezna polja.
+\IfFileExists{slike/slika_opravljen_del_mediform.png}{%
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.82\textwidth]{slike/slika_opravljen_del_mediform.png}
+\caption{Prikaz dokon\v{c}anega dela obrazca, kjer sistem z zeleno kljukico ozna\v{c}i zaklju\v{c}en odsek}
+\end{figure}
+}{}
 
-\subsubsection{Izvoz v PDF}
+Kot je razvidno iz Izseka kode~4, sistem za vsak pododsek preveri, ali so izpolnjena vsa pripadajo\v{c}a polja, nato pa enako logiko uporabi \v{s}e na ravni celotnega odseka. Ko je odsek dokon\v{c}an, se v uporabni\v{s}kem vmesniku prika\v{z}e zelena kljukica. Tako dijak hitro vidi, kateri deli poro\v{c}ila so zaklju\v{c}eni, in zmanj\v{s}a mo\v{z}nost, da bi ob oddaji spregledal katero izmed obveznih vsebin.
 
-Ena od pomembnih funkcij je tudi izvoz poročila v PDF. To je uporabno zato, ker dijak na koncu dobi urejen dokument, ki ga lahko shrani ali predstavi v tiskani obliki.
+\subsubsection{Generiranje PDF in varovanje osebnih podatkov pri izvozu}
 
-\textbf{Primer kode --- priprava izvoza v PDF:}
+Generiranje PDF je ena najpomembnej\v{s}ih funkcij aplikacije. Izsek kode 5 prikazuje, kako je implementiran izvoz poro\v{c}ila z varnim poimenovanjem datoteke.
 
-\begin{lstlisting}
+
+\IfFileExists{slike/medifrom_example_moznosti_izvoza_options.png}{%
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.75\textwidth]{slike/medifrom_example_moznosti_izvoza_options.png}
+  \caption{Mo\v{z}nosti izvoza poro\v{c}ila}
+\end{figure}
+}{}
+
+\begin{lstlisting}[language=JavaScript, caption={Izsek kode 5: Generiranje PDF in anonimno poimenovanje datoteke (GDPR)}]
+// OPOMBA: To je skrajsan izsek. Celotna implementacija PDF izvoza
+// vsebuje se dodatno logiko za naslovnico, prelom strani, izpis kategorij,
+// podkategorij, tabel in koncno oblikovanje dokumenta.
+
 const exportToPdf = async (formData) => {
-    const pdf = new jsPDF();
-    pdf.text('MediForm - porocilo o zdravstveni negi', 14, 15);
-    pdf.text(`Ime: ${formData.name}`, 14, 30);
-    pdf.text(`Datum: ${formData.date}`, 14, 40);
-    pdf.save('mediform-porocilo.pdf');
+  const pdfDoc = await PDFDocument.create();
+  pdfDoc.registerFontkit(fontkit);
+
+  // Nalozimo pisavo
+  const fontBytes = await fetch("/fonts/Roboto-Regular.ttf")
+    .then((res) => res.arrayBuffer());
+  const font = await pdfDoc.embedFont(fontBytes);
+
+  const page = pdfDoc.addPage();
+  const { height } = page.getSize();
+
+  page.drawText("MediForm - porocilo o zdravstveni negi", {
+    x: 50,
+    y: height - 50,
+    size: 14,
+    font,
+  });
+  page.drawText(`Datum: ${formData.date}`, {
+    x: 50,
+    y: height - 80,
+    size: 11,
+    font,
+  });
+  page.drawText(`Starost pacienta: ${formData.age} let`, {
+    x: 50,
+    y: height - 100,
+    size: 11,
+    font,
+  });
+
+  // GDPR: Ime datoteke ne vsebuje osebnih podatkov pacienta!
+  const now = new Date();
+  const dateStr = now.toISOString().slice(0, 10);
+  const timeStr = now.toTimeString().slice(0, 5)
+    .replace(":", "-");
+  const fileName =
+    `OBRAVNAVA-${dateStr}-${timeStr}-${formData.age}let.pdf`;
+
+  const pdfBytes = await pdfDoc.save();
+  const blob = new Blob([pdfBytes], { type: "application/pdf" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = fileName;
+  a.click();
 };
 \end{lstlisting}
 
-Razlaga: V funkciji najprej ustvarim nov PDF dokument, nato po vrsticah zapišem ključne podatke obrazca in na koncu datoteko shranim. Prednost takšne izvedbe je, da uporabnik z enim klikom dobi standardizirano poročilo brez ročnega prepisovanja.
 
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.8\textwidth]{slike/medifrom_example_moznosti_izvoza_options.png}
-    \caption{Slika 4: Primer možnosti izvoza poročila}
+\IfFileExists{slike/Pdf_primer_generira_za_izmislejno_osebo.png}{%
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.75\textwidth]{slike/Pdf_primer_generira_za_izmislejno_osebo.png}
+  \caption{Primer generiranega PDF poro\v{c}ila}
 \end{figure}
+}{}
 
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.8\textwidth]{slike/Pdf_primer_generira_za_izmislejno_osebo.png}
-    \caption{Slika 5: Primer izvoza poročila v PDF}
-\end{figure}
+Kot je razvidno iz Izseka kode~5, je ime PDF datoteke sestavljeno iz datuma, ure in starosti pacienta --- ne pa iz imena ali priimka. To je klju\v{c}na varnostna odlo\v{c}itev z vidika GDPR. Ker uporabniki ob ustvarjanju dokumenta nehote vpi\v{s}ejo pravo ime pacienta v polje za poimenovanje vnosa, bi tak\v{s}no ime v imenu datoteke pomenilo, da bi se osebni podatki raz\v{s}irili po e-po\v{s}ti, spletu ali v oblaku. Format \texttt{OBRAVNAVA-DATUM-URA-STAROST} zagotavlja, da datoteka ni sledljiva do posameznega pacienta.
 
-\subsubsection{Preverjanje shranjene izbire}
-
-Ko uporabnik ponovno odpre aplikacijo, mu želim prikazati zadnje stanje obrazca. Zato preberem podatke iz brskalnika in jih uporabim za predizpolnitev vmesnika.
-
-\textbf{Primer kode --- branje iz piškotka ali lokalne shrambe:}
-
-\begin{lstlisting}
-const getSavedForm = (formId) => {
-    const saved = localStorage.getItem(`mediform-${formId}`);
-    return saved ? JSON.parse(saved) : {};
-};
-\end{lstlisting}
-
-Razlaga: Funkcija preveri, ali pod ključem obstaja že shranjen JSON. Če obstaja, ga pretvori nazaj v objekt in ga uporabi za predizpolnitev polj. Če podatka ni, vrne prazen objekt, zato aplikacija deluje stabilno tudi pri prvem obisku.
 
 \subsubsection{Odzivni prikaz na telefonu}
 
-Ker se aplikacija največ uporablja na telefonu, sem moral prilagoditi tudi postavitev elementov. Pri tem sem uporabil odzivne razrede Tailwind CSS, da so gumbi in polja uporabni tudi na manjših zaslonih.
+Izsek kode 6 prikazuje, kako je z razredi Tailwind CSS dose\v{z}ena odzivna postavitev za telefon in ra\v{c}unalnik.
 
-\textbf{Primer kode --- odzivna postavitev:}
-
-\begin{lstlisting}
+\begin{lstlisting}[language=JavaScript, caption={Izsek kode 6: Odzivna postavitev z razredi Tailwind CSS}]
 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-    <input className="w-full rounded-lg border p-3" />
-    <button className="w-full rounded-lg bg-sky-600 p-3 text-white md:w-auto">
-        Shrani
-    </button>
+  <input
+    className="w-full rounded-lg border p-3"
+    placeholder="Vnesi vrednost..."
+  />
+  <button
+    className="w-full rounded-lg bg-sky-600 p-3
+               text-white hover:bg-sky-700 md:w-auto"
+    onClick={handleSave}
+  >
+    Shrani
+  </button>
 </div>
 \end{lstlisting}
 
-Razlaga: Razreda \texttt{grid-cols-1} in \texttt{md:grid-cols-2} določata, da je na telefonu prikazana ena kolona, na širšem zaslonu pa dve. Gumb je na telefonu čez celo širino, zato je lažje klikljiv med delom na praksi.
+Kot je razvidno iz Izseka kode~6, razreda \texttt{grid-cols-1} in \texttt{md:grid-cols-2} dolo\v{c}ata, da je na telefonu prikazana ena kolona, na \v{s}ir\v{s}em zaslonu pa dve. Gumb je na telefonu \v{c}ez celo \v{s}irino, kar je posebej koristno med delom na praksi.
 
-\subsubsection{Analiza uporabe aplikacije}
+\subsection{Hranjenje podatkov, GDPR in pravne zadeve}
 
-Za preverjanje uporabe sem v razvojni fazi pripravil kratek skript, ki je pregledal lokalno shranjene vnose in iz njih izračunal osnovne statistike. Ta del sem uporabljal samo med testiranjem in ga v produkcijski različici odstranil, da je šola dobila popoln nadzor nad informacijami in da v objavljeni aplikaciji ni dodatne analitike, ki bi posegala v zasebnost.
+\subsubsection{Splo\v{s}no o shranjevanju}
 
-Na podlagi zadnjega izpisa \texttt{backend-usage-dump.json} sem ugotovil, da je aplikacijo uporabljalo 17 uporabnikov, skupaj pa je bilo ustvarjenih 95 poročil, kar pomeni povprečno 5,59 poročila na uporabnika. Iz časovne porazdelitve je razvidno, da se je uporaba pojavljala v tednih W04, W05, W06, W07, W08, W12, W13 in W14, pri čemer je bilo največ aktivnosti v osrednjem delu obdobja, ko je bilo poročanje najbolj intenzivno. Analiza tipov izvoza je pokazala 74 izvozov v PDF in 21 izvozov v JSON, zato je jasno, da je bil PDF v praksi glavna oblika za oddajo poročil.
+Aplikacija MediForm ne po\v{s}ilja nobenih podatkov na stre\v{z}nik. Vsi podatki ostanejo izklju\v{c}no v \textbf{lokalnem pomnilniku brskalnika} (\texttt{localStorage}) na napravi uporabnika. To pomeni, da nobena tretja oseba, vklju\v{c}no z razvijalcem aplikacije, nima dostopa do vnesenih podatkov.
 
-\section{Git in verzioniranje}
+\textbf{Samodejno shranjevanje ob vnosu:} Aplikacija je zasnovana tako, da se vsak vpis v obrazec \textbf{takoj} shrani v \texttt{localStorage} --- \v{s}e preden uporabnik klikne gumb za shranjevanje ali zapusti stran. To pomeni, da se podatki ohranijo tudi ob nenamernem zaprtju zavihka ali izgubi internetne povezave.
 
-Kontrola verzij je v projektu potekala z orodjem Git po postopnem in iterativnem pristopu razvoja. V repozitoriju je zabeleženih 73 commitov v obdobju od 29. 10. 2024 do 20. 1. 2026. Razvoj je potekal predvsem na veji \texttt{main}, občasno pa tudi na razvojni veji \texttt{dev}, kar je omogočilo varno pripravo sprememb in njihovo poznejše združevanje. V zgodovini so vidni tudi merge commiti in vsaj en pull request, zato je bil uporabljen standarden sodelovalni potek dela (branching, pregled sprememb in združevanje).
+\subsubsection{Skladnost z uredbo GDPR}
 
-Iz zgodovine commitov je razviden prehod od začetnih manjših popravkov k bolj strukturiranemu razvoju funkcionalnosti. Med pomembnejše faze sodijo implementacija izvoza PDF, izboljšave uporabniškega vmesnika, uvedba GDPR elementov (piškotki, pogoji uporabe, politika zasebnosti), optimizacije postavitve komponent in kasnejši refaktor arhitekture v smeri local-first pristopa. Del starejših commitov vsebuje bolj neformalne opise, v kasnejšem obdobju pa so sporočila bolj standardizirana (na primer \texttt{feat}, \texttt{fix}, \texttt{refactor}, \texttt{chore}), kar izboljša sledljivost sprememb in olajša vzdrževanje kode.
+Uredba GDPR (Splo\v{s}na uredba o varstvu podatkov) dolo\v{c}a, da morajo biti osebni podatki shranjeni le toliko \v{c}asa, kolikor je nujno potrebno, ter zavarovani pred nepoobla\v{s}\v{c}enim dostopom.
 
-Tak način kontrole verzij je omogočil:
+Podatki o pacientih v zdravstveni negi so \textbf{ob\v{c}utljivi osebni podatki} v smislu 9.~\v{c}lena uredbe GDPR. Aplikacija MediForm je zasnovana tako, da identifikacija posameznega pacienta ni mogo\v{c}a: v aplikaciji se ne shranjuje ime ali priimek, temve\v{c} le starost, datum in zdravstveni parametri. Izjema je polje za poimenovanje dokumenta, kjer \textbf{uporabniki nehote vpi\v{s}ejo pravo ime in priimek pacienta}. Tega ne moremo popolnoma prepre\v{c}iti z zahtevami v vmesniku, zato je klju\v{c}no, da se tak\v{s}no ime nikoli ne prenese v PDF ali deli naprej.
+
+Zasnova varstva podatkov temelji na naslednjih na\v{c}elih:
 \begin{itemize}
-    \item jasno sledljivost razvoja skozi čas,
-    \item varno uvajanje novih funkcionalnosti brez izgube prejšnjih stanj,
-    \item lažje odpravljanje napak in vračanje na stabilne različice,
-    \item boljšo organizacijo timskega dela prek vej in merge postopkov.
+    \item \textbf{Minimizacija podatkov}: shranjuje se le tisto, kar je nujno za izpolnitev obrazca.
+    \item \textbf{Omejitev hrambe}: vsak dokument ima rok veljavnosti dveh mesecev (60 dni). Po poteku se samodejno izbri\v{s}e.
+    \item \textbf{Lokalna hramba}: podatki niso nikjer drugje kot v lokalnem pomnilniku brskalnika te naprave.
+    \item \textbf{Brisanje ob odjavi}: ob odjavi se izbri\v{s}ejo pi\v{s}kotki seje, kar prepre\v{c}i dostop nepoobla\v{s}\v{c}enim osebam.
+    \item \textbf{Anonimno poimenovanje PDF}: izvozene datoteke so poimenovane po formatu \texttt{OBRAVNAVA-DATUM-URA-STAROST}, ne po imenu pacienta.
 \end{itemize}
 
-\textbf{Primer kode --- beleženje verzije v Gitu:}
+\subsubsection{Delovanje localStorage in potekanje dokumentov}
 
-\begin{lstlisting}
-git add .
-git commit -m "Dodan izvoz PDF in izboljsan prikaz napredka"
-\end{lstlisting}
+Vsak shranjeni dokument vsebuje polje \texttt{expires} z Unix-\v{c}asovnim \v{z}igom (milisekunde od 1.~1.~1970). Ob vsakem zagonu aplikacije se za vsak shranjeni dokument preveri, ali je trenutni \v{c}as (\texttt{Date.now()}) ve\v{c}ji od vrednosti \texttt{expires}. \v{C}e je, se dokument samodejno izbri\v{s}e iz \texttt{localStorage}.
 
-Razlaga: Prvi ukaz pripravi datoteke za shranjevanje, drugi pa ustvari novo verzijo z opisom spremembe. Tak način beleženja sprememb je zadostoval za jasno sledljivost razvoja in enostavno vračanje na prejšnja stabilna stanja.
+\subsubsection{Login, logout in vpliv na podatke}
 
-\section{Deployment (objava aplikacije)}
+Ob \textbf{prijavi} (\textit{login}) se pi\v{s}kotek s podatki o seji zapi\v{s}e v brskalnik. Ob \textbf{odjavi} (\textit{logout}) se ta pi\v{s}kotek izbri\v{s}e, hkrati pa aplikacija izbri\v{s}e tudi vse lokalno shranjene podatke, vklju\v{c}no z dokumenti in uporabni\v{s}kimi vnosi.
 
-Deployment sem izvedel kot objavo statične frontend aplikacije na platformi Vercel. Ker MediForm ne uporablja ločenega strežniškega dela, je bil postopek enostaven: priprava produkcijskega \texttt{build} paketa in objava na domeni \url{https://mediform.cadez.eu/}. V nadaljevanju je verjeten prehod na lokalno gostovanje, saj bi to šoli omogočilo popoln nadzor nad aplikacijo, podatki in načinom posodabljanja.
+Tak pristop zagotavlja ve\v{c}jo varnost podatkov, saj po odjavi v brskalniku ne ostanejo nobeni ob\v{c}utljivi podatki uporabnika.
 
-Postopek objave je potekal po korakih:
-\begin{enumerate}
-    \item lokalno sem preveril, da aplikacija deluje brez napak,
-    \item pripravil sem produkcijski build,
-    \item objavil sem datoteke na gostovanje,
-    \item po objavi sem preveril delovanje obrazca, shranjevanja in izvoza PDF.
-\end{enumerate}
+\subsection{Objava aplikacije}
 
-Tak pristop je bil primeren za šolsko okolje, ker je objava hitra, stroški so nizki, vzdrževanje pa preprostejše kot pri aplikaciji z dodatnim strežnikom.
+Objavo sem izvedel na platformi Vercel kot stati\v{c}no frontend aplikacijo. Ker MediForm ne uporablja lo\v{c}enega stre\v{z}ni\v{s}kega dela, je bil postopek enostaven: priprava produkcijskega \texttt{build} paketa in objava na domeni \url{https://mediform.cadez.eu/}. Po objavi sem preveril delovanje obrazca, shranjevanja in izvoza PDF.
 
-\section{Zaključek}
+% 4. ZAKLJUCEK
+\section{Zaklju\v{c}ek}
 
-Razvoj aplikacije MediForm mi je pokazal, da je mogoče z ustreznim načrtovanjem in dobrim sodelovanjem z naročnikom razviti uporabno digitalno rešitev za šolsko okolje. Aplikacija je nastala zato, ker sem želel odpraviti težave, ki so se pojavljale pri ročnem izpolnjevanju poročil o praktičnem pouku.
+Razvoj aplikacije MediForm mi je pokazal, da je mogo\v{c}e z ustreznim na\v{c}rtovanjem in dobrim sodelovanjem z naro\v{c}nikom razviti uporabno digitalno re\v{s}itev za \v{s}olsko okolje. Aplikacija je nastala kot odgovor na konkreten problem: dijaki so poro\v{c}ila izpolnjevali tik pred rokom in si podatke preprosto izmislili.
 
-Ugotovil sem, da je bila najpomembnejša dobra komunikacija s stranko. Sproti sem preverjal, kaj naročnica dejansko potrebuje, in na podlagi njenih pripomb popravljal aplikacijo. To se je izkazalo za pravilno odločitev, saj so bile funkcionalnosti bolj usmerjene v resnične potrebe uporabnikov.
+Ugotovil sem, da je bila najpomembnej\v{s}a dobra komunikacija s stranko. Sproti sem preverjal, kaj naro\v{c}nica dejansko potrebuje, in na podlagi njenih pripomb popravljal aplikacijo. Posebej dragocena je bila ugotovitev, da je sprotno izpolnjevanje na telefonu klju\v{c}no za verodostojnost podatkov.
 
-Pri tehnični izvedbi sem se srečal z več izzivi, predvsem pri organizaciji obrazcev, samodejnem shranjevanju podatkov in pripravi izvoza v PDF. Vsak problem sem reševal postopno in sproti preverjal skupaj z naročnico, zato je bila končna rešitev stabilna in uporabna v praksi.
+Pri tehni\v{c}ni izvedbi sem se sre\v{c}al z ve\v{c} izzivi, predvsem pri organizaciji obrazcev, samodejnem shranjevanju podatkov, varovanju zasebnosti in pripravi izvoza v PDF. Vsak problem sem re\v{s}eval postopno skupaj z naro\v{c}nico.
 
-Na koncu sem ugotovil, da MediForm uporabnikom olajša delo, zmanjšuje količino ročnega pisanja in omogoča bolj sprotno izpolnjevanje dokumentacije. Zato menim, da je digitalizacija tovrstnih postopkov smiselna in koristna rešitev za izobraževalno okolje.
+Na koncu sem ugotovil, da MediForm uporabnikom olaj\v{s}a delo, zmanj\v{s}uje koli\v{c}ino ro\v{c}nega pisanja in --- kar je najpomembnej\v{s}e --- omogo\v{c}a bolj sprotno in resni\v{c}no izpolnjevanje dokumentacije.
 
+% VIRI
 \newpage
 
 \section*{Viri}
 
-European Commission. (2020). \textit{Digital Education Action Plan 2021--2027}. European Commission.
-
 Firebase. (2026). \textit{Firebase Documentation}. Dostopno prek: \url{https://firebase.google.com/docs/}
 
-Redecker, C. (2017). \textit{European Framework for the Digital Competence of Educators (DigCompEdu)}. European Commission.
-
-Selwyn, N. (2016). \textit{Should robots replace teachers? AI and the future of education}. Polity Press.
+pdf-lib. (2026). \textit{pdf-lib Documentation}. Dostopno prek: \url{https://pdf-lib.js.org/}
 
 React. (2026). \textit{React Documentation}. Dostopno prek: \url{https://react.dev/}
 
-Express.js. (2026). \textit{Express.js Documentation}. Dostopno prek: \url{https://expressjs.com/}
+Vercel. (2026). \textit{Vercel Documentation}. Dostopno prek: \url{https://vercel.com/docs}
 
+% PRILOGE
 \newpage
 
 \section*{Priloge}
 
-\subsection*{Priloga A: Spletno mesto in GitHub}
+\subsection*{Spletno mesto in GitHub}
 
 Spletna aplikacija MediForm je dostopna na naslovu: \url{https://mediform.cadez.eu/}
 
-Izvorna koda projekta je dostopna na GitHubu:
-\begin{itemize}
-    \item \url{https://mediform.cadez.eu/}
-    \item \url{https://github.com/lin-cadez/MediForm}
-\end{itemize}
+Izvorna koda projekta je dostopna na GitHubu: \url{https://github.com/lin-cadez/MediForm}
 
-\subsection*{Priloga B: Tehnične specifikacije}
 
-\begin{itemize}
-    \item Frontend: React, TypeScript, Tailwind CSS, Vite
-    \item Shranjevanje: cookies in localStorage
-    \item Objava: statično gostovanje
-\end{itemize}
-
+% IZJAVA O AVTORSTVU
 \newpage
+\thispagestyle{empty}
 
 \section*{Izjava o avtorstvu}
 
-Izjavljam, da je strokovno poročilo \textit{Spletna aplikacija MediForm za digitalno poročanje o zdravstveni negi} v celoti moje avtorsko delo, ki sem ga izdelal samostojno s pomočjo navedene literature in pod vodstvom mentorja.
+Izjavljam, da je seminarska naloga \textit{Izdelava spletne strani za naro\v{c}nika} v celoti moje avtorsko delo, ki sem ga izdelal samostojno s pomo\v{c}jo navedene literature in pod vodstvom mentorja.
+
+\vspace{2cm}
+
+Ljubljana, april 2026 \hfill Lin \v{C}ade\v{z}
 
 \vspace{1.5cm}
+\hfill \rule{6cm}{0.4pt}
 
-Ljubljana, april 2026 \hfill Lin Čadež
+\hfill \textit{(lastno ro\v{c}ni podpis)}
 
 \end{document}

@@ -54,8 +54,37 @@ const generateId = () => `doc_${Date.now()}_${Math.random().toString(36).substr(
 // Load user documents from localStorage
 const loadUserDocuments = (): UserDocument[] => {
     try {
-        const docs = localStorage.getItem("userDocuments");
-        return docs ? JSON.parse(docs) : [];
+        const docsObj = localStorage.getItem("userDocuments");
+        if (!docsObj) return [];
+        
+        let docs: UserDocument[] = JSON.parse(docsObj);
+        
+        // Expiration check (2 months = 60 days)
+        const now = Date.now();
+        const TWO_MONTHS_MS = 60 * 24 * 60 * 60 * 1000;
+        
+        let hasExpired = false;
+        const validDocs = docs.filter(doc => {
+            // Extract the timestamp part from the id (doc_{timestamp}_{random})
+            const parts = doc.id.split('_');
+            if (parts.length > 1) {
+                const timecode = parseInt(parts[1], 10);
+                if (!isNaN(timecode) && now - timecode > TWO_MONTHS_MS) {
+                    // It has expired
+                    hasExpired = true;
+                    // Delete the document data itself
+                    localStorage.removeItem(doc.id);
+                    return false;
+                }
+            }
+            return true;
+        });
+        
+        if (hasExpired) {
+            saveUserDocuments(validDocs);
+        }
+        
+        return validDocs;
     } catch {
         return [];
     }

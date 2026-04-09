@@ -886,9 +886,13 @@ export default function Checklist({ userInfo }: ChecklistProps) {
             const pdfBlob = await generatePdfFromJson(list as JsonData, userInfoForPdf);
             const link = document.createElement("a");
             link.href = URL.createObjectURL(pdfBlob);
-            link.download = `${list?.title || "checklist"}_${userInfo.ime}_${
-                userInfo.priimek
-            }.pdf`;
+            
+            const now = new Date();
+            const datum = now.toLocaleDateString("sl-SI", { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\s/g, '');
+            const ura = now.toLocaleTimeString("sl-SI", { hour: '2-digit', minute: '2-digit' }).replace(':', 'h');
+            const starost = list?.patient_data?.starost || 'NeznanaStarost';
+            
+            link.download = `OBRAVNAVA_${datum}_${ura}_${starost}.pdf`;
             link.click();
 
             setShowSuccess(true);
