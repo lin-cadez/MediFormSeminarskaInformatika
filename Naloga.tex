@@ -131,7 +131,39 @@ Posebej se zahvaljujem Heleni Bo\v{z}i\v{c} Jane\v{z}i\v{c} s Srednje zdravstven
 
 V tej seminarski nalogi predstavljam razvoj spletne aplikacije MediForm, ki sem jo izdelal za Srednjo zdravstveno \v{s}olo Ljubljana. Aplikacija je namenjena dijakom zdravstvene nege za sprotno in strukturirano izpolnjevanje poro\v{c}il o obravnavah na podro\v{c}ju zdravstvene nege. Za digitalno re\v{s}itev sem se odlo\v{c}il zato, ker so bila papirna poro\v{c}ila zamudna, neenotna in pogosto izpolnjena \v{s}ele tik pred rokom oddaje, kar je povzro\v{c}alo, da so si dijaki podatke enostavno izmislili. V nalogi opisujem analizo potreb naro\v{c}nika, potek dogovarjanja, izbiro tehnologij ter tehni\v{c}no izvedbo klju\v{c}nih funkcionalnosti, pri \v{c}emer posebno pozornost namenjam varovanju osebnih podatkov in skladnosti z uredbo GDPR.
 
-\textbf{Klju\v{c}ne besede:} spletna aplikacija, MediForm, zdravstvena nega, prakti\v{c}ni pouk, React, TypeScript, Tailwind CSS, localStorage, GDPR
+\textbf{Klju\v{c}ne besede:} spletna aplikacija, MediForm, zdravstvena nega, prakti\v{c}ni pouk, React, TypeScript, Tailwind CSS, lokalno shranjevanje, GDPR v zdravstvu
+
+
+\newpage
+\thispagestyle{empty}
+
+\section*{Abstract}
+
+This thesis presents the development of MediForm, a web application created for the Secondary School of Nursing in Ljubljana. The application enables nursing students to complete structured reports about patient care activities directly on their mobile phones or computers. The project was initiated in response to issues with the existing paper-based system, where students frequently filled in reports retroactively and fabricated data. The thesis describes the client's needs analysis, the negotiation process, the choice of technologies, and the technical implementation of key functionalities, with particular attention to personal data protection and GDPR compliance.
+
+\textbf{Keywords:} web application, MediForm, healthcare, nursing education, React, TypeScript, Tailwind CSS, local storage, GDPR
+
+\newpage
+\thispagestyle{empty}
+
+\section*{Seznam kratic in okrajšav}
+
+\begin{tabbing}
+\hspace{3.5cm} \= \kill
+\textbf{API} \> Application Programming Interface (vmesnik za programiranje aplikacij) \\
+\textbf{CSS} \> Cascading Style Sheets (kaskadne stilske predloge) \\
+\textbf{GDPR} \> General Data Protection Regulation (Splošna uredba o varstvu podatkov) \\
+\textbf{HTML} \> HyperText Markup Language (jezik za označevanje nadbesedila) \\
+\textbf{JSON} \> JavaScript Object Notation (format za izmenjavo podatkov) \\
+\textbf{JS} \> JavaScript \\
+\textbf{PDF} \> Portable Document Format \\
+\textbf{React} \> Odprtokodna knjižnica za gradnjo uporabniških vmesnikov \\
+\textbf{TS} \> TypeScript \\
+\textbf{TTF} \> TrueType Font (format pisave) \\
+\textbf{UI} \> User Interface (uporabniški vmesnik) \\
+\textbf{URL} \> Uniform Resource Locator (enotni lokator vira) \\
+\end{tabbing}
+
 
 % KAZALO
 \newpage
@@ -620,6 +652,24 @@ Vsak shranjeni dokument vsebuje polje \texttt{expires} z Unix-\v{c}asovnim \v{z}
 Ob \textbf{prijavi} (\textit{login}) se pi\v{s}kotek s podatki o seji zapi\v{s}e v brskalnik. Ob \textbf{odjavi} (\textit{logout}) se ta pi\v{s}kotek izbri\v{s}e, hkrati pa aplikacija izbri\v{s}e tudi vse lokalno shranjene podatke, vklju\v{c}no z dokumenti in uporabni\v{s}kimi vnosi.
 
 Tak pristop zagotavlja ve\v{c}jo varnost podatkov, saj po odjavi v brskalniku ne ostanejo nobeni ob\v{c}utljivi podatki uporabnika.
+
+
+\subsection{Testiranje aplikacije}
+
+Testiranje aplikacije sem izvedel v dveh fazah. V prvi fazi sem funkcionalnost
+preveril sam z ro\v{c}nim testiranjem --- preizkusil sem izpolnjevanje obrazca,
+shranjevanje stanja v \texttt{localStorage}, samodejno brisanje pote\v{c}enih
+dokumentov ter izvoz v PDF. Posebno pozornost sem namenil delovanju na mobilnih
+napravah, saj je bila zahteva naro\v{c}nice, da aplikacija deluje na telefonu.
+
+V drugi fazi so aplikacijo preizkusile dijakinje Srednje zdravstvene \v{s}ole
+Ljubljana v realnem okolju med prakso. Na podlagi njihovih povratnih informacij
+sem odkril in odpravil ve\v{c} napak: popravil sem na\v{c}in shranjevanja stanja
+ob prijavi, prilagodil nekatere elemente obrazca za la\v{z}jo uporabo na
+manj\v{s}em zaslonu ter dopolnil vsebino kontrolnega seznama glede na dejanske
+potrebe z dela na terenu. Testiranje v realnem okolju se je izkazalo za
+najpomembnej\v{s}i del zagotavljanja kakovosti, saj so uporabniki odkrili
+te\v{z}ave, ki jih s samostojnim testiranjem nisem mogel predvideti.
 
 \subsection{Objava aplikacije}
 
